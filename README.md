@@ -1,9 +1,19 @@
+[![semantic-release](https://img.shields.io/badge/semantic-release-e10079.svg?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
+# Spring Http Exception Handling Library
+
+![GitHub](https://img.shields.io/github/license/lsd-consulting/spring-http-exception-handling-library)
+![Codecov](https://img.shields.io/codecov/c/github/lsd-consulting/spring-http-exception-handling-library)
+
+[![CI](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/ci.yml/badge.svg)](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/ci.yml)
+[![Nightly Build](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/nightly.yml/badge.svg)](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/nightly.yml)
+[![GitHub release](https://img.shields.io/github/release/lsd-consulting/spring-http-exception-handling-library)](https://github.com/lsd-consulting/spring-http-exception-handling-library/releases)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.lsd-consulting/spring-http-exception-handling-library)
+
 ## TODO
 * add tests for ResponseStatusException
 * add "failedAt" to the list of attributes
 * add test for CustomResponseEntityExceptionHandler#handleBindException
-
-# Spring Http Exception Handling Library
 
 This library's purpose is to standardise all HTTP related exception handling. It achieves this by declaring a common error response format, eg:
 
