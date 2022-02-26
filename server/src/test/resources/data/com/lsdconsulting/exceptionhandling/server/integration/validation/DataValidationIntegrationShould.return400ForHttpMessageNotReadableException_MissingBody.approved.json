@@ -1,0 +1,10 @@
+{
+  "errorCode" : "MALFORMED",
+  "messages" : [ "Message not readable" ],
+  "dataErrors" : [ ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "HttpMessageNotReadableException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "feign.retry.maxAttempts",
+      "description": "The maximum times the feign client may retry",
+      "type": "java.lang.Integer"
+    },
+    {
+      "name": "feign.retry.period",
+      "description": "The initial period between retries (also used to calculate the next periods at a factor of 1.5)",
+      "type": "java.lang.Long"
+    },
+    {
+      "name": "feign.retry.maxPeriod",
+      "description": "The maximum period between retries",
+      "type": "java.lang.Long"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "errorCode" : "SOME_ERROR_CODE",
+  "messages" : [ "Exception message" ],
+  "dataErrors" : [ {
+    "code" : "Conflict",
+    "name" : "someId",
+    "value" : "99999999",
+    "message" : "exception.conflict.alreadyExists"
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "TestParameterException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "common.platform.service.test.url",
+      "type": "java.lang.String"
+    }
+  ]
+}

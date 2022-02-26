@@ -1,0 +1,15 @@
+{
+  "errorCode" : "MALFORMED",
+  "messages" : [ "Data type error" ],
+  "dataErrors" : [ {
+    "code" : "typeMismatch",
+    "name" : null,
+    "value" : "some_value",
+    "message" : "Failed to convert value of type 'java.lang.String' to required type 'long'; nested exception is java.lang.NumberFormatException: For input string: \"some_value\""
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "NumberFormatException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

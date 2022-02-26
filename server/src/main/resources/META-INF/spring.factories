@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.lsdconsulting.exceptionhandling.server.config.ExceptionHandlerConfiguration
+

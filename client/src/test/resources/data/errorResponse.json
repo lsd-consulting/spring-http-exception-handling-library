@@ -1,0 +1,25 @@
+{
+  "errorCode": "ERROR_CODE",
+  "messages": [
+    "message1",
+    "message2"
+  ],
+  "dataErrors": [
+    {
+      "code": "Code1",
+      "name": "name1",
+      "value": "a",
+      "message": "data_error_message1"
+    },
+    {
+      "code": "Code2",
+      "name": "name2",
+      "value": "b",
+      "message": "data_error_message2"
+    }
+  ],
+  "attributes": {
+    "attribute1": "value1",
+    "attribute2": "value2"
+  }
+}

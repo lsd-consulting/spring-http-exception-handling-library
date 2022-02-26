@@ -1,0 +1,20 @@
+{
+  "errorCode" : "INVALID",
+  "messages" : [ "Validation failed" ],
+  "dataErrors" : [ {
+    "code" : "NotBlank",
+    "name" : "message",
+    "value" : null,
+    "message" : "validation.missingValue"
+  }, {
+    "code" : "NotNull",
+    "name" : "number",
+    "value" : null,
+    "message" : "validation.missingValue"
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "MethodArgumentNotValidException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

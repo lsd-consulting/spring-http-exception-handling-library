@@ -1,0 +1,6 @@
+
+rootProject.name = 'spring-http-exception-handling-library'
+
+include 'api'
+include 'client'
+include 'server'

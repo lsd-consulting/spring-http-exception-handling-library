@@ -1,0 +1,20 @@
+{
+  "errorCode" : "INVALID",
+  "messages" : [ "Validation failed" ],
+  "dataErrors" : [ {
+    "code" : "Pattern",
+    "name" : "message",
+    "value" : "b",
+    "message" : "validation.wrongPattern"
+  }, {
+    "code" : "Size",
+    "name" : "message",
+    "value" : "b",
+    "message" : "validation.wrongSize"
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "MethodArgumentNotValidException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

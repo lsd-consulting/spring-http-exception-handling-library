@@ -1,0 +1,15 @@
+{
+  "errorCode" : "ALREADY_REQUESTED",
+  "messages" : [ "A matching request has already been processed." ],
+  "dataErrors" : [ {
+    "code" : "Exists",
+    "name" : "contract-reference",
+    "value" : "123",
+    "message" : "Transaction already processed with the contract-reference in the value field."
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "DuplicateRequestException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}
