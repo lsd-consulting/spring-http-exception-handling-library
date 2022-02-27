@@ -29,7 +29,7 @@ subprojects {
                 artifactId = rootProject.name + '-' + project.name
                 version = "$version"
 
-                from components.release
+                from components.java
 //                artifact sourcesJar
 //                artifact javadocJar
 
@@ -89,7 +89,7 @@ signing {
         def signingKey = findProperty("signingKey")
         def signingPassword = findProperty("signingPassword")
         useInMemoryPgpKeys(signingKey, signingPassword)
-        sign publishing.publications
+        sign publishing.publications.mavenJava
     } else {
         // Use signing properties in ~/.gradle/gradle.properties
         sign publishing.publications
