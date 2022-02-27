@@ -24,9 +24,12 @@ jobs:
           path: build
       - uses: codecov/codecov-action@v1
         with:
-          files:
-            server/build/reports/jacoco/test/jacocoTestReport.xml
+          files: server/build/reports/jacoco/test/jacocoTestReport.xml
             client/build/reports/jacoco/test/jacocoTestReport.xml
+          verbose: true
+      - uses: codecov/codecov-action@v1
+        with:
+          files: client/build/reports/jacoco/test/jacocoTestReport.xml
           verbose: true
   release:
     needs: build
