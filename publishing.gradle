@@ -13,11 +13,11 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
-artifacts {
-    archives jar
-    archives sourcesJar
-    archives javadocJar
-}
+//artifacts {
+//    archives jar
+//    archives sourcesJar
+//    archives javadocJar
+//}
 
 subprojects {
 
@@ -30,6 +30,9 @@ subprojects {
                 version = "$version"
 
                 from components.java
+                artifact sourcesJar
+                artifact javadocJar
+
                 pom {
                     name = project.name
                     description = 'A set of Spring exception handlers making sure the application always returns a consistent error response.'
