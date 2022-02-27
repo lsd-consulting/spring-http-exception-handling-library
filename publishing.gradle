@@ -30,7 +30,7 @@ subprojects {
                 version = "$version"
 
                 from components.java
-                artifact sourcesJar
+//                artifact sourcesJar
                 artifact javadocJar
 
                 pom {
