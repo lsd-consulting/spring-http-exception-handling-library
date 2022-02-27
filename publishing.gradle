@@ -29,7 +29,7 @@ subprojects {
                 artifactId = rootProject.name + '-' + project.name
                 version = "$version"
 
-                from components.java
+                from components.release
 //                artifact sourcesJar
 //                artifact javadocJar
 
