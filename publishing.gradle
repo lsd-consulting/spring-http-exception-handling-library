@@ -1,7 +1,3 @@
-//bootJar {
-//    enabled = false
-//}
-
 jar {
     enabled = true
     classifier = ""
@@ -19,8 +15,8 @@ task javadocJar(type: Jar) {
 
 artifacts {
     archives jar
-//    archives sourcesJar
-//    archives javadocJar
+    archives sourcesJar
+    archives javadocJar
 }
 
 subprojects {
@@ -34,8 +30,8 @@ subprojects {
                 version = "$version"
 
                 from components.java
-//                artifact sourcesJar
-//                artifact javadocJar
+                artifact sourcesJar
+                artifact javadocJar
                 pom {
                     name = rootProject.name
                     description = 'A set of Spring exception handlers making sure the application always returns a consistent error response.'
