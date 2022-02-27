@@ -22,6 +22,7 @@ task javadocJar(type: Jar) {
 subprojects {
 
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
     publishing {
         publications {
             mavenJava(MavenPublication) {
@@ -72,6 +73,20 @@ subprojects {
             }
         }
     }
+
+    signing {
+        if (project.findProperty("signingKey")) {
+            // Use in-memory ascii-armored keys
+            def signingKey = findProperty("signingKey")
+            def signingPassword = findProperty("signingPassword")
+            useInMemoryPgpKeys(signingKey, signingPassword)
+            sign publishing.publications.mavenJava
+        } else {
+            // Use signing properties in ~/.gradle/gradle.properties
+            sign publishing.publications.mavenJava
+        }
+    }
+
 }
 
 nexusPublishing {
@@ -80,18 +95,5 @@ nexusPublishing {
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
-    }
-}
-
-signing {
-    if (project.findProperty("signingKey")) {
-        // Use in-memory ascii-armored keys
-        def signingKey = findProperty("signingKey")
-        def signingPassword = findProperty("signingPassword")
-        useInMemoryPgpKeys(signingKey, signingPassword)
-        sign publishing.publications
-    } else {
-        // Use signing properties in ~/.gradle/gradle.properties
-        sign publishing.publications
     }
 }
