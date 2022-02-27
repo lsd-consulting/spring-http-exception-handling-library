@@ -13,12 +13,6 @@ task javadocJar(type: Jar) {
     from javadoc
 }
 
-//artifacts {
-//    archives jar
-//    archives sourcesJar
-//    archives javadocJar
-//}
-
 subprojects {
 
     apply plugin: 'maven-publish'
@@ -29,11 +23,7 @@ subprojects {
                 groupId = "$group"
                 artifactId = rootProject.name + '-' + project.name
                 version = "$version"
-
                 from components.java
-//                artifact sourcesJar
-//                artifact javadocJar
-
                 pom {
                     name = project.name
                     description = 'A set of Spring exception handlers making sure the application always returns a consistent error response.'
