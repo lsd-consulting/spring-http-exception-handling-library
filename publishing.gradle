@@ -25,7 +25,7 @@ subprojects {
                 version = "$version"
                 from components.java
                 pom {
-                    name = project.name
+                    name = "Spring Http Exception Handling Library - $project.name"
                     description = 'A set of Spring exception handlers making sure the application always returns a consistent error response.'
                     url = 'https://github.com/lsd-consulting/spring-http-exception-handling-library'
                     licenses {
