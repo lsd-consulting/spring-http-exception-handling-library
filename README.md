@@ -8,7 +8,7 @@
 [![CI](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/ci.yml/badge.svg)](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/ci.yml)
 [![Nightly Build](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/nightly.yml/badge.svg)](https://github.com/lsd-consulting/spring-http-exception-handling-library/actions/workflows/nightly.yml)
 [![GitHub release](https://img.shields.io/github/release/lsd-consulting/spring-http-exception-handling-library)](https://github.com/lsd-consulting/spring-http-exception-handling-library/releases)
-![Maven Central](https://img.shields.io/maven-central/v/io.github.lsd-consulting/spring-http-exception-handling-library)
+![Maven Central](https://img.shields.io/maven-central/v/io.github.lsd-consulting/spring-http-exception-handling-library-api)
 
 ## TODO
 * add tests for ResponseStatusException
