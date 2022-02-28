@@ -19,8 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
-import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.TestPropertySource
 import java.io.IOException
@@ -82,7 +81,7 @@ class ExceptionIntegrationShould(
     fun return404TestObjectNotFoundException(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/objectNotFoundException", ErrorResponse::class.java)
 
-        assertThat(responseEntity.statusCode, `is`(HttpStatus.NOT_FOUND))
+        assertThat(responseEntity.statusCode, `is`(NOT_FOUND))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -91,7 +90,7 @@ class ExceptionIntegrationShould(
     fun return405ForHttpRequestMethodNotSupportedException(approver: Approver) {
         val responseEntity = testRestTemplate.postForEntity("/objects/1", TestRequest(), ErrorResponse::class.java)
 
-        assertThat(responseEntity.statusCode, `is`(HttpStatus.METHOD_NOT_ALLOWED))
+        assertThat(responseEntity.statusCode, `is`(METHOD_NOT_ALLOWED))
         approver.assertApproved(asString(responseEntity))
     }
 
@@ -100,7 +99,7 @@ class ExceptionIntegrationShould(
     fun return409AnnotatedStatusOnException(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedException", ErrorResponse::class.java)
 
-        assertThat(responseEntity.statusCode, `is`(HttpStatus.CONFLICT))
+        assertThat(responseEntity.statusCode, `is`(CONFLICT))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -109,7 +108,34 @@ class ExceptionIntegrationShould(
     fun return409AnnotatedStatusOnExceptionWithMessage(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedExceptionWithMessage", ErrorResponse::class.java)
 
-        assertThat(responseEntity.statusCode, `is`(HttpStatus.CONFLICT))
+        assertThat(responseEntity.statusCode, `is`(CONFLICT))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun return507ResponseStatusExceptionWithMessage(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/generateResponseStatusException", ErrorResponse::class.java)
+
+        assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun return507ResponseStatusExceptionWithoutMessage(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/generateResponseStatusExceptionNoMessage", ErrorResponse::class.java)
+
+        assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun return507AnnotatedResponseStatusException(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedResponseStatusException", ErrorResponse::class.java)
+
+        assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 

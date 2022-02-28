@@ -11,7 +11,6 @@
 ![Maven Central](https://img.shields.io/maven-central/v/io.github.lsd-consulting/spring-http-exception-handling-library-api)
 
 ## TODO
-* add tests for ResponseStatusException
 * add "failedAt" to the list of attributes
 * add test for CustomResponseEntityExceptionHandler#handleBindException
 

@@ -10,12 +10,15 @@ import org.springframework.core.Ordered
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
+import org.springframework.web.server.ResponseStatusException
 import javax.validation.ConstraintViolation
 import javax.validation.ConstraintViolationException
 
@@ -31,6 +34,7 @@ class ControllerExceptionHandler(
     protected fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<*> {
         return when (ex) {
             is ConstraintViolationException -> handle(ex, request)
+            is ResponseStatusException -> handle(ex, request)
             is ErrorResponseException -> handle(ex, request)
             else -> ResponseEntity(unknownErrorHandler.handle(ex, request), getResponseStatusFromAnnotation(ex))
         }
@@ -39,6 +43,16 @@ class ControllerExceptionHandler(
     private fun handle(ex: ErrorResponseException, request: WebRequest): ResponseEntity<*> {
         val errorResponse = ex.errorResponse.copy(attributes = ex.errorResponse.attributes + attributePopulator.populateAttributes(ex, request))
         return ResponseEntity(errorResponse, ex.httpStatus)
+    }
+
+    private fun handle(ex: ResponseStatusException, request: WebRequest): ResponseEntity<*> {
+        val errorResponse = ErrorResponse(
+            errorCode = ex.status.name,
+//            messages = if (ex.message != null) listOf(ex.message!!) else listOf(),
+            messages = listOf(ex.message!!),
+            attributes = attributePopulator.populateAttributes(ex, request)
+        )
+        return ResponseEntity(errorResponse, ex.status)
     }
 
     private fun handle(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<*> {
@@ -51,13 +65,13 @@ class ControllerExceptionHandler(
             dataErrors = bodyDataErrors,
             attributes = attributePopulator.populateAttributes(ex, request)
         )
-        return ResponseEntity(errorResponse, HttpStatus.BAD_REQUEST)
+        return ResponseEntity(errorResponse, BAD_REQUEST)
     }
 
     private fun getResponseStatusFromAnnotation(ex: Exception): HttpStatus {
         // check if exception was annotated with @ResponseStatus
         val responseStatus = AnnotatedElementUtils.findMergedAnnotation(ex.javaClass, ResponseStatus::class.java)
-        return responseStatus?.code ?: HttpStatus.INTERNAL_SERVER_ERROR
+        return responseStatus?.code ?: INTERNAL_SERVER_ERROR
     }
 
     private fun convert(constraintViolation: ConstraintViolation<*>): DataError {

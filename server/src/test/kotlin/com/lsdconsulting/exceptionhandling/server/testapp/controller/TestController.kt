@@ -2,10 +2,7 @@ package com.lsdconsulting.exceptionhandling.server.testapp.controller
 
 import com.lsdconsulting.exceptionhandling.api.ErrorResponse
 import com.lsdconsulting.exceptionhandling.server.exception.ErrorResponseException
-import com.lsdconsulting.exceptionhandling.server.testapp.api.exception.TestAnnotatedException
-import com.lsdconsulting.exceptionhandling.server.testapp.api.exception.TestException
-import com.lsdconsulting.exceptionhandling.server.testapp.api.exception.TestObjectNotFoundException
-import com.lsdconsulting.exceptionhandling.server.testapp.api.exception.TestParameterException
+import com.lsdconsulting.exceptionhandling.server.testapp.api.exception.*
 import com.lsdconsulting.exceptionhandling.server.testapp.api.request.IsoDateTimeRequest
 import com.lsdconsulting.exceptionhandling.server.testapp.api.request.TestRequest
 import com.lsdconsulting.exceptionhandling.server.testapp.api.response.TestResponse
@@ -13,6 +10,7 @@ import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.time.ZonedDateTime
 import javax.validation.Valid
 import javax.validation.constraints.Max
@@ -90,6 +88,18 @@ class TestController {
             attributes = mapOf("attribute" to "attribute"),
             messages = listOf("some message")), PRECONDITION_FAILED
     ) {}
+
+    @GetMapping("/generateResponseStatusException")
+    fun getWithResponseStatusException(): Unit =
+        throw ResponseStatusException(INSUFFICIENT_STORAGE, "Insufficient storage")
+
+    @GetMapping("/generateResponseStatusExceptionNoMessage")
+    fun getWithResponseStatusExceptionNoMessage(): Unit =
+        throw ResponseStatusException(INSUFFICIENT_STORAGE)
+
+    @GetMapping("/generateAnnotatedResponseStatusException")
+    fun getWithAnnotatedResponseStatusException(): Unit =
+        throw TestResponseStatusException()
 
     @GetMapping("/malformedResponse")
     fun getMalformedResponse(@RequestParam responseCode: Int): ResponseEntity<String> =

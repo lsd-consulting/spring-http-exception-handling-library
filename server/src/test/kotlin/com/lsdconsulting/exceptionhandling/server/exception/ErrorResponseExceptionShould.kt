@@ -6,7 +6,7 @@ import org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpStatus
+import org.springframework.http.HttpStatus.OK
 
 internal class ErrorResponseExceptionShould {
 
@@ -15,21 +15,21 @@ internal class ErrorResponseExceptionShould {
     @Test
     fun preserveExceptionMessageThroughErrorDetailResponseConstructor() {
         val result: ErrorResponseException =
-            object : ErrorResponseException(ErrorResponse(messages = listOf(message)), HttpStatus.OK) {}
+            object : ErrorResponseException(ErrorResponse(messages = listOf(message)), OK) {}
         assertThat(result.message, `is`(message))
     }
 
     @Test
     fun preserveMessageThroughErrorDetailResponseConstructor() {
         val result: ErrorResponseException =
-            object : ErrorResponseException(ErrorResponse(messages = listOf(message)), HttpStatus.OK) {}
+            object : ErrorResponseException(ErrorResponse(messages = listOf(message)), OK) {}
         assertThat(result.errorResponse.messages[0], `is`(message))
     }
 
     @Test
     fun handleEmptyMessageThroughErrorDetailResponseConstructor() {
         val result: ErrorResponseException =
-            object : ErrorResponseException(ErrorResponse(), HttpStatus.OK) {}
+            object : ErrorResponseException(ErrorResponse(), OK) {}
         assertThat(result.message, `is`("Error message unavailable"))
     }
 }
