@@ -41,6 +41,14 @@ class PathVariableIntegrationShould(
     }
 
     @Test
+    fun return400ForConstraintViolationException_PathVariableTooLong(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/pathVariableValidation/12345", ErrorResponse::class.java)
+
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
     fun return400ForTypeMismatchException(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/some_value/", ErrorResponse::class.java)
 

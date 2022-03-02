@@ -1,0 +1,15 @@
+{
+  "errorCode" : "INVALID_PARAMETER",
+  "messages" : [ "Validation failed" ],
+  "dataErrors" : [ {
+    "code" : "Size",
+    "name" : "objectId",
+    "value" : "12345",
+    "message" : "size must be between 0 and 3"
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "ConstraintViolationException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

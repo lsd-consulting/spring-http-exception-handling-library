@@ -16,6 +16,7 @@ import javax.validation.Valid
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.Positive
+import javax.validation.constraints.Size
 
 @Validated
 @RestController
@@ -43,6 +44,13 @@ class TestController {
         message = "message",
         number = 5L,
         id = objectId,
+        created = ZonedDateTime.now())
+
+    @GetMapping("/pathVariableValidation/{objectId}")
+    fun getObjectByPathVariable(@PathVariable @Size(max = 3) objectId: String) = TestResponse(
+        message = "message",
+        number = 5L,
+        id = objectId.toLong(),
         created = ZonedDateTime.now())
 
     @GetMapping
