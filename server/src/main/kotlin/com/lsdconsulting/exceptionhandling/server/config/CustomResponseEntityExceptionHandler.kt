@@ -141,7 +141,7 @@ class CustomResponseEntityExceptionHandler(
             .fieldErrors
             .stream()
             .map { fieldError: FieldError -> convert(fieldError) }
-            .sorted(Comparator.comparing { obj: DataError -> obj.code!! })
+            .sorted(Comparator.comparing { obj: DataError -> obj.name + obj.value + obj.code!! })
             .collect(Collectors.toList())
     }
 

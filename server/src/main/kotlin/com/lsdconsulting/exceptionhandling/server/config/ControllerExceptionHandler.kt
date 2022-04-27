@@ -58,7 +58,7 @@ class ControllerExceptionHandler(
     private fun handle(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<*> {
         val bodyDataErrors = ex.constraintViolations
             .map { constraintViolation: ConstraintViolation<*> -> convert(constraintViolation) }
-            .sortedBy { it.code }
+            .sortedBy { it.name + it.value + it.code }
         val errorResponse = ErrorResponse(
             errorCode = PARAMETER_VALIDATION_FAILED_ERROR_CODE,
             messages = listOf(VALIDATION_FAILED),

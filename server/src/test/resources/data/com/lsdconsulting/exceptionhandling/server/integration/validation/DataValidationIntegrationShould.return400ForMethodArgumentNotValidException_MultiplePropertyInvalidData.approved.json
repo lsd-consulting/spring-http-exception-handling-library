@@ -2,11 +2,6 @@
   "errorCode" : "INVALID",
   "messages" : [ "Validation failed" ],
   "dataErrors" : [ {
-    "code" : "Min",
-    "name" : "number",
-    "value" : "3",
-    "message" : "validation.lessThanAcceptedMinimum"
-  }, {
     "code" : "Pattern",
     "name" : "message",
     "value" : "b",
@@ -16,6 +11,11 @@
     "name" : "message",
     "value" : "b",
     "message" : "validation.wrongSize"
+  }, {
+    "code" : "Min",
+    "name" : "number",
+    "value" : "3",
+    "message" : "validation.lessThanAcceptedMinimum"
   } ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",
