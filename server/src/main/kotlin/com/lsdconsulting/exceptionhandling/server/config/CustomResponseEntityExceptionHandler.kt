@@ -59,6 +59,7 @@ class CustomResponseEntityExceptionHandler(
             messages = listOf(VALIDATION_FAILED_MESSAGE),
             dataErrors = listOf(dataError),
             attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling MissingServletRequestParameterException - httpStatus:{}, errorResponse:{}", status, errorResponse)
         return ResponseEntity(errorResponse, status)
     }
 
@@ -73,6 +74,7 @@ class CustomResponseEntityExceptionHandler(
             messages = listOf(DATA_MISSING_MESSAGE),
             dataErrors = dataErrorsFromBindingResults(ex.bindingResult),
             attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling BindException - httpStatus:{}, errorResponse:{}", status, errorResponse)
         return ResponseEntity(errorResponse, status)
     }
 
@@ -87,6 +89,7 @@ class CustomResponseEntityExceptionHandler(
             messages = listOf(VALIDATION_FAILED_MESSAGE),
             dataErrors = dataErrorsFromBindingResults(ex.bindingResult),
             attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling MethodArgumentNotValidException - httpStatus:{}, errorResponse:{}", status, errorResponse)
         return ResponseEntity(errorResponse, status)
     }
 
@@ -100,6 +103,7 @@ class CustomResponseEntityExceptionHandler(
             errorCode = MALFORMED_ERROR_CODE,
             messages = listOf(MESSAGE_PARSE_ERROR_MESSAGE),
             attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling HttpMessageNotReadableException - httpStatus:{}, errorResponse:{}", status, errorResponse)
         return ResponseEntity(errorResponse, status)
     }
 
@@ -119,6 +123,7 @@ class CustomResponseEntityExceptionHandler(
             messages = listOf(DATA_TYPE_ERROR_MESSAGE),
             dataErrors = listOf(dataError),
             attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling TypeMismatchException - httpStatus:{}, errorResponse:{}", status, errorResponse)
         return ResponseEntity(errorResponse, status)
     }
 
@@ -133,7 +138,9 @@ class CustomResponseEntityExceptionHandler(
         if (INTERNAL_SERVER_ERROR == status) {
             request.setAttribute(ERROR_EXCEPTION_ATTRIBUTE, ex, SCOPE_REQUEST)
         }
-        return ResponseEntity(unknownErrorHandler.handle(ex, request), status)
+        val errorResponse = unknownErrorHandler.handle(ex, request)
+        log().error("Handling unknown exception - httpStatus:{}, errorResponse:{}", status, errorResponse)
+        return ResponseEntity(errorResponse, status)
     }
 
     private fun dataErrorsFromBindingResults(bindingResult: BindingResult): List<DataError> {

@@ -32,12 +32,15 @@ class ControllerExceptionHandler(
     @ExceptionHandler(Exception::class)
     @ResponseBody
     protected fun handleUncaughtException(ex: Exception, request: WebRequest): ResponseEntity<*> {
-        return when (ex) {
+        val responseEntity = when (ex) {
             is ConstraintViolationException -> handle(ex, request)
             is ResponseStatusException -> handle(ex, request)
             is ErrorResponseException -> handle(ex, request)
             else -> ResponseEntity(unknownErrorHandler.handle(ex, request), getResponseStatusFromAnnotation(ex))
         }
+        log().error("For request:{}, generated httpStatus:{}, errorResponse:{}", request, responseEntity.statusCode, responseEntity.body)
+        log().error("Handling exception", ex)
+        return responseEntity
     }
 
     private fun handle(ex: ErrorResponseException, request: WebRequest): ResponseEntity<*> {

@@ -1,5 +1,6 @@
 package com.lsdconsulting.exceptionhandling.server.config.attribute
 
+import com.lsdconsulting.exceptionhandling.server.config.log
 import com.lsdconsulting.exceptionhandling.server.tracer.RequestTracer
 import org.apache.commons.lang3.StringUtils
 import org.springframework.core.NestedRuntimeException
@@ -27,6 +28,7 @@ class AttributePopulator(
                 START_TIME_ATTRIBUTE, value
             )
         }
+        log().error("Populated error response attributes:{}", attributes)
         return attributes
     }
 

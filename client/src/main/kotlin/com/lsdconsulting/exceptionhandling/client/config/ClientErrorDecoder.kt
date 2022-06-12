@@ -26,7 +26,9 @@ class ClientErrorDecoder : ErrorDecoder {
         val status = response.status()
         val responseBody = getResponseBody(response)
         log().error("Service returned status:{}, content:{}", status, responseBody)
-        return getException(status, responseBody)
+        val exception = getException(status, responseBody)
+        log().debug("Generated exception:{}", exception?.message, exception)
+        return exception
     }
 
     private fun getResponseBody(response: Response) =
