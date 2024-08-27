@@ -17,6 +17,8 @@ jobs:
     with:
       java-version: '17'
       codecov: true
+      codecov-path: '**/build/reports/jacoco/test/jacocoTestReport.xml'
+      artifact-path: '**/build/reports'
     secrets: inherit
   release:
     needs: build
