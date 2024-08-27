@@ -1,6 +1,6 @@
 jar {
     enabled = true
-    classifier = ""
+    archiveClassifier = ""
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
