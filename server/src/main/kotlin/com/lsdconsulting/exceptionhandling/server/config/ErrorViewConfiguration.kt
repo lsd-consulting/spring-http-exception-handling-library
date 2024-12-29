@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.http.HttpStatus
+import org.springframework.lang.Nullable
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.View
 import javax.servlet.http.HttpServletRequest
@@ -26,7 +27,7 @@ class ErrorViewConfiguration {
         @ConditionalOnMissingBean(name = ["error"])
         fun customErrorView() = object : View {
 
-            override fun render(model: Map<String, *>, request: HttpServletRequest, response: HttpServletResponse) {
+            override fun render(@Nullable model: MutableMap<String, *>?, request: HttpServletRequest, response: HttpServletResponse) {
                 if (response.contentType == null) {
                     response.contentType = contentType
                 }
