@@ -1,6 +1,6 @@
 {
   "errorCode" : "UNKNOWN_ERROR",
-  "messages" : [ "Content type 'text/plain;charset=UTF-8' not supported" ],
+  "messages" : [ "Content-Type 'text/plain;charset=UTF-8' is not supported" ],
   "dataErrors" : [ ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",

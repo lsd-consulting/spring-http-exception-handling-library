@@ -10,22 +10,14 @@ import org.springframework.boot.autoconfigure.http.HttpMessageConverters
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder
 import org.springframework.cloud.openfeign.support.SpringDecoder
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 
+@Configuration
 class ClientConfiguration {
-    @Value("\${feign.retry.period:500}")
-    private val retryInitialPeriod: Long = 0
-
-    @Value("\${feign.retry.maxPeriod:1000}")
-    private val retryMaxPeriod: Long = 0
-
-    @Value("\${feign.retry.maxAttempts:5}")
-    private val retryMaxAttempts = 0
 
     @Bean
-    fun errorDecoder(): ErrorDecoder {
-        return ClientErrorDecoder()
-    }
+    fun errorDecoder(): ErrorDecoder = ClientErrorDecoder()
 
     @Bean
     fun feignDecoder(): Decoder {
@@ -35,7 +27,9 @@ class ClientConfiguration {
     }
 
     @Bean
-    fun feignRetryer(): Retryer {
-        return Retryer.Default(retryInitialPeriod, retryMaxPeriod, retryMaxAttempts)
-    }
+    fun feignRetryer(
+        @Value("\${feign.retry.period:500}") retryInitialPeriod: Long,
+        @Value("\${feign.retry.maxPeriod:1000}") retryMaxPeriod: Long,
+        @Value("\${feign.retry.maxAttempts:5}") retryMaxAttempts: Int,
+    ) = Retryer.Default(retryInitialPeriod, retryMaxPeriod, retryMaxAttempts)
 }

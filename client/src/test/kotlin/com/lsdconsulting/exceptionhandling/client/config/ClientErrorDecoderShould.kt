@@ -6,7 +6,7 @@ import feign.RequestTemplate
 import feign.Response
 import org.apache.commons.lang3.RandomStringUtils.randomAlphanumeric
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.IsInstanceOf
+import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -27,7 +27,7 @@ internal class ClientErrorDecoderShould {
             .request(dummyRequest)
             .build()
         val result = underTest.decode(randomAlphanumeric(5), response)
-        assertThat(result, IsInstanceOf.instanceOf(exception))
+        assertThat(result, instanceOf(exception))
     }
 
     @ParameterizedTest
@@ -39,7 +39,7 @@ internal class ClientErrorDecoderShould {
             .request(dummyRequest)
             .build()
         val result = underTest.decode(randomAlphanumeric(5), response)
-        assertThat(result, IsInstanceOf.instanceOf(exception))
+        assertThat(result, instanceOf(exception))
     }
 
     @Test
@@ -50,7 +50,7 @@ internal class ClientErrorDecoderShould {
             .build()
         val result = underTest.decode(randomAlphanumeric(5), response)
         assertThat(
-            result, IsInstanceOf.instanceOf(
+            result, instanceOf(
                 InternalServerException::class.java
             )
         )

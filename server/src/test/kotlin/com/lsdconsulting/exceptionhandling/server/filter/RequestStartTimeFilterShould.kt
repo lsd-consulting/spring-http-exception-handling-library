@@ -4,10 +4,10 @@ import com.lsdconsulting.exceptionhandling.server.time.TimeProvider
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import jakarta.servlet.ServletException
 import org.junit.jupiter.api.Test
 import java.io.IOException
 import java.time.ZonedDateTime
-import javax.servlet.ServletException
 
 internal class RequestStartTimeFilterShould {
 

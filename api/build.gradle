@@ -1,10 +1,10 @@
 plugins {
-    id "signing"
-    id "org.jetbrains.kotlin.jvm"
-    id "org.jetbrains.kotlin.plugin.spring" version "2.1.0"
+    id 'signing'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
-compileKotlin.kotlinOptions.jvmTarget = "17"
-compileTestKotlin.kotlinOptions.jvmTarget = "17"
+kotlin {
+    jvmToolchain(17)
+}
 
 apply from: 'dependencies.gradle'

@@ -9,7 +9,6 @@ import com.lsdconsulting.exceptionhandling.server.integration.config.Integration
 import com.lsdconsulting.exceptionhandling.server.testapp.TestApplication
 import com.lsdconsulting.exceptionhandling.server.testapp.client.TestClient
 import com.oneeyedmen.okeydoke.Approver
-import org.apache.commons.lang3.RandomUtils.nextLong
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
@@ -20,20 +19,23 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus.*
 import org.springframework.test.context.TestPropertySource
 import java.io.IOException
+import java.security.SecureRandom
 import java.util.stream.Stream
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = [TestApplication::class])
+@SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
 @ExtendWith(ResourcesApprovalsExtension::class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
+@AutoConfigureObservability
 class ClientBasedExceptionHandlingIntegrationShould(
     @Autowired private val testClient: TestClient
 ) {
@@ -42,7 +44,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
     @Test
     @Throws(ErrorResponseException::class)
     fun returnObjectWithSameObjectIdAsRequested() {
-        val id = nextLong()
+        val id = SecureRandom().nextLong(1000, Long.MAX_VALUE)
         val testResponse = testClient.getObject(id)
         assertThat(testResponse?.message, `is`("message"))
         assertThat(testResponse?.id, `is`(id))
@@ -118,6 +120,15 @@ class ClientBasedExceptionHandlingIntegrationShould(
         val resultException = assertThrows(NotFoundException::class.java) { testClient.withNotFoundException }
 
         assertThat(resultException.httpStatus, `is`(NOT_FOUND))
+        approver.assertApproved(asString(resultException.errorResponse))
+    }
+
+    @Test
+    @Throws(IOException::class)
+    fun throwConflictException(approver: Approver) {
+        val resultException = assertThrows(ConflictException::class.java) { testClient.withConflictException }
+
+        assertThat(resultException.httpStatus, `is`(CONFLICT))
         approver.assertApproved(asString(resultException.errorResponse))
     }
 

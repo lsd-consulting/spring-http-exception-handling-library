@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.cloud.openfeign.EnableFeignClients
@@ -33,6 +34,7 @@ import java.util.concurrent.atomic.AtomicInteger
 @TestPropertySource("classpath:application-retry.properties")
 @EnableFeignClients(clients = [DeadServiceClient::class, TestClient::class])
 @Import(IntegrationTestConfiguration::class, RequestCountingConfig::class)
+@AutoConfigureObservability
 class ClientShould(
     @Value("\${feign.retry.maxAttempts}") private val maxAttempts: Int = 0,
     @Autowired private  val deadServiceClient: DeadServiceClient,

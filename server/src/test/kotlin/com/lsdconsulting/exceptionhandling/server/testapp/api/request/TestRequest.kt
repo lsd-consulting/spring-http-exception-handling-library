@@ -1,6 +1,6 @@
 package com.lsdconsulting.exceptionhandling.server.testapp.api.request
 
-import javax.validation.constraints.*
+import jakarta.validation.constraints.*
 
 data class TestRequest(
     @field:Size(min = 2, max = 10, message = "validation.wrongSize")

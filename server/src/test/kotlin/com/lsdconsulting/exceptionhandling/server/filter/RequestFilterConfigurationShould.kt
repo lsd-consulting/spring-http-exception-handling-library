@@ -25,8 +25,9 @@ internal class RequestFilterConfigurationShould {
             val servletContext = context.servletContext!!
             assertThat(servletContext, notNullValue())
             val filterRegistrations = servletContext.filterRegistrations
-            assertThat(filterRegistrations, hasKey("requestStartTimeFilter"))
-            assertThat(filterRegistrations["requestStartTimeFilter"]!!.className, `is`(RequestStartTimeFilter::class.java.name))
+            assertThat(filterRegistrations, notNullValue())
+            assertThat(filterRegistrations, hasKey("registerRequestStartTimeFilter"))
+            assertThat(filterRegistrations["registerRequestStartTimeFilter"]!!.className, `is`(RequestStartTimeFilter::class.java.name))
         }
     }
 }

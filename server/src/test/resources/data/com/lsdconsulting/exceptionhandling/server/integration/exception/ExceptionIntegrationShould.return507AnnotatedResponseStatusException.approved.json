@@ -1,6 +1,6 @@
 {
-  "errorCode" : "INSUFFICIENT_STORAGE",
-  "messages" : [ "507 INSUFFICIENT_STORAGE \"Insufficient storage\"; nested exception is java.io.IOException" ],
+  "errorCode" : "UNKNOWN_ERROR",
+  "messages" : [ "507 INSUFFICIENT_STORAGE \"Insufficient storage\"" ],
   "dataErrors" : [ ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",

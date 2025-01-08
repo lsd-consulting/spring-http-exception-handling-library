@@ -1,6 +1,6 @@
 {
   "errorCode" : "UNKNOWN_ERROR",
-  "messages" : [ "Request method 'POST' not supported" ],
+  "messages" : [ "Request method 'POST' is not supported" ],
   "dataErrors" : [ ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",

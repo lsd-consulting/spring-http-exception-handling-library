@@ -15,6 +15,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -33,6 +34,7 @@ import org.springframework.test.context.TestPropertySource
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
+@AutoConfigureObservability
 class DataValidationIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {

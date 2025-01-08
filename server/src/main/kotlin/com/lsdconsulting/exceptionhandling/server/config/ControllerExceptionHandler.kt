@@ -1,11 +1,13 @@
 package com.lsdconsulting.exceptionhandling.server.config
 
-import com.google.common.collect.Iterables
 import com.lsdconsulting.exceptionhandling.api.DataError
 import com.lsdconsulting.exceptionhandling.api.ErrorResponse
 import com.lsdconsulting.exceptionhandling.server.config.attribute.AttributePopulator
 import com.lsdconsulting.exceptionhandling.server.config.attribute.UnknownErrorHandler
 import com.lsdconsulting.exceptionhandling.server.exception.ErrorResponseException
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.ConstraintViolationException
+import lsd.logging.log
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.core.annotation.Order
@@ -19,8 +21,6 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.server.ResponseStatusException
-import javax.validation.ConstraintViolation
-import javax.validation.ConstraintViolationException
 
 @RestControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE - 10) // not sure why but this should be lower than CustomResponseEntityExceptionHandler
@@ -50,12 +50,12 @@ class ControllerExceptionHandler(
 
     private fun handle(ex: ResponseStatusException, request: WebRequest): ResponseEntity<*> {
         val errorResponse = ErrorResponse(
-            errorCode = ex.status.name,
+            errorCode = ex.statusCode.toString(),
 //            messages = if (ex.message != null) listOf(ex.message!!) else listOf(),
-            messages = listOf(ex.message!!),
+            messages = listOf(ex.message ?: "Message missing"),
             attributes = attributePopulator.populateAttributes(ex, request)
         )
-        return ResponseEntity(errorResponse, ex.status)
+        return ResponseEntity(errorResponse, ex.statusCode)
     }
 
     private fun handle(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<*> {
@@ -81,7 +81,7 @@ class ControllerExceptionHandler(
         return DataError(
             message = constraintViolation.message,
             value = constraintViolation.invalidValue.toString(),
-            name = Iterables.getLast(constraintViolation.propertyPath).name,
+            name = constraintViolation.propertyPath.last().name,
             code = constraintViolation.constraintDescriptor.annotation.annotationClass.simpleName)
     }
 

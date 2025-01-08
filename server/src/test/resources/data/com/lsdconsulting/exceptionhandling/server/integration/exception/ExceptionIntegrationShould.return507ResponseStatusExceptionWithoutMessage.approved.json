@@ -1,5 +1,5 @@
 {
-  "errorCode" : "INSUFFICIENT_STORAGE",
+  "errorCode" : "UNKNOWN_ERROR",
   "messages" : [ "507 INSUFFICIENT_STORAGE" ],
   "dataErrors" : [ ],
   "attributes" : {

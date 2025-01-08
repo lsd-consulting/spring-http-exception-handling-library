@@ -1,20 +1,14 @@
 plugins {
     id 'signing'
-    id "jacoco"
-    id "org.jetbrains.kotlin.jvm"
-    id "org.jetbrains.kotlin.plugin.spring" version "2.1.0"
+    id 'jacoco'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.plugin.spring'
 }
 
-compileKotlin.kotlinOptions.jvmTarget = "17"
-compileTestKotlin.kotlinOptions.jvmTarget = "17"
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-        html.outputLocation = layout.buildDirectory.dir('reports/coverage')
-    }
+kotlin {
+    jvmToolchain(17)
 }
 
+apply from: 'jacoco.gradle'
 apply from: 'dependencies.gradle'
 apply from: 'test.gradle'

@@ -14,8 +14,9 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
@@ -25,9 +26,10 @@ import org.springframework.test.context.TestPropertySource
 import java.io.IOException
 
 @Import(IntegrationTestConfiguration::class)
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = [TestApplication::class])
+@SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
 @ExtendWith(ResourcesApprovalsExtension::class)
 @TestPropertySource("classpath:application-test.properties")
+@AutoConfigureObservability
 @EnableFeignClients(clients = [TestClient::class])
 class ExceptionIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
@@ -38,6 +40,7 @@ class ExceptionIntegrationShould(
     @Test
     @Throws(IOException::class)
     fun return500TestException(approver: Approver) {
+        testRestTemplate.getForEntity("/objects/generateTestException", String::class.java)
         val responseEntity = testRestTemplate.getForEntity("/objects/generateTestException", ErrorResponse::class.java)
         assertThat(responseEntity.statusCode, `is`(INTERNAL_SERVER_ERROR))
         approver.assertApproved(asString(responseEntity.body!!))
@@ -133,6 +136,7 @@ class ExceptionIntegrationShould(
     @Test
     @Throws(IOException::class)
     fun return507AnnotatedResponseStatusException(approver: Approver) {
+        testRestTemplate.getForEntity("/objects/generateAnnotatedResponseStatusException", String::class.java)
         val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedResponseStatusException", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))

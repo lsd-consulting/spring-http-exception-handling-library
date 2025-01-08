@@ -4,40 +4,80 @@ import com.lsdconsulting.exceptionhandling.client.exception.*
 import com.lsdconsulting.exceptionhandling.client.exception.ErrorResponseException.Companion.create
 import feign.Response
 import feign.codec.ErrorDecoder
-import org.apache.commons.io.IOUtils
+import lsd.logging.log
+import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.*
-import java.util.function.Function
+import java.io.IOException
+import java.util.*
 
-class ClientErrorDecoder : ErrorDecoder {
+open class ClientErrorDecoder : ErrorDecoder {
+    private val exceptionMap: EnumMap<HttpStatus, (String) -> ErrorResponseException?> =
+        EnumMap(
+            mapOf(BAD_REQUEST to { responseBody: String ->
+                create(
+                    BadRequestException::class.java, responseBody
+                )
+            }, NOT_FOUND to { responseBody: String ->
+                create(
+                    NotFoundException::class.java, responseBody
+                )
+            }, CONFLICT to { responseBody: String ->
+                create(
+                    ConflictException::class.java, responseBody
+                )
+            }, PRECONDITION_FAILED to { responseBody: String ->
+                create(
+                    PreconditionFailedException::class.java, responseBody
+                )
+            }, INTERNAL_SERVER_ERROR to { responseBody: String ->
+                create(
+                    InternalServerException::class.java, responseBody
+                )
+            }, NOT_IMPLEMENTED to { responseBody: String ->
+                create(
+                    NotImplementedException::class.java, responseBody
+                )
+            }, BAD_GATEWAY to { responseBody: String ->
+                create(
+                    BadGatewayException::class.java, responseBody
+                )
+            }, SERVICE_UNAVAILABLE to { responseBody: String ->
+                create(
+                    ServiceUnavailableException::class.java, responseBody
+                )
+            }, GATEWAY_TIMEOUT to { responseBody: String ->
+                create(
+                    GatewayTimeoutException::class.java, responseBody
+                )
+            })
+        )
 
-    private val exceptionMap = mapOf(
-        BAD_REQUEST.value() to Function { x: String -> create(BadRequestException::class.java, x) },
-        NOT_FOUND.value() to Function { x: String -> create(NotFoundException::class.java, x) },
-        CONFLICT.value() to Function { x: String -> create(ConflictException::class.java, x) },
-        PRECONDITION_FAILED.value() to Function { x: String -> create(PreconditionFailedException::class.java, x) },
-        INTERNAL_SERVER_ERROR.value() to Function { x: String -> create(InternalServerException::class.java, x) },
-        NOT_IMPLEMENTED.value() to Function { x: String -> create(NotImplementedException::class.java, x) },
-        BAD_GATEWAY.value() to Function { x: String -> create(BadGatewayException::class.java, x) },
-        SERVICE_UNAVAILABLE.value() to Function { x: String -> create(ServiceUnavailableException::class.java, x) },
-        GATEWAY_TIMEOUT.value() to Function { x: String -> create(GatewayTimeoutException::class.java, x) }
-    )
-
-    override fun decode(methodKey: String, response: Response): Exception? {
+    override fun decode(methodKey: String, response: Response): Exception {
         val status = response.status()
         val responseBody = getResponseBody(response)
         log().error("Service returned status:{}, content:{}", status, responseBody)
         val exception = getException(status, responseBody)
-        log().debug("Generated exception:{}", exception?.message, exception)
+        log().debug("Generated exception:{}", exception.message, exception)
         return exception
     }
 
-    private fun getResponseBody(response: Response) =
-        response.body()?.let { IOUtils.toString(it.asInputStream()) } ?: EMPTY_RESPONSE_BODY
+    private fun getException(status: Int, responseBody: String): Exception {
+        val httpStatus = resolve(status)
+        return if (exceptionMap.containsKey(httpStatus)) exceptionMap[httpStatus]!!.invoke(
+            responseBody
+        ) as Exception else create(
+            InternalServerException::class.java, responseBody
+        )!!
+    }
 
-    private fun getException(status: Int, responseBody: String): Exception? =
-        exceptionMap[status]?.apply(responseBody) ?: create(InternalServerException::class.java, responseBody)
-
-    companion object {
-        private const val EMPTY_RESPONSE_BODY: String = ""
+    private fun getResponseBody(response: Response): String {
+        return response.body()?.let { body: Response.Body ->
+            return try {
+                body.asInputStream().bufferedReader().use { it.readText() }
+            } catch (e: IOException) {
+                log().error(e.message)
+                return ""
+            }
+        } ?: ""
     }
 }
