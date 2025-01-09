@@ -8,7 +8,7 @@ import com.lsdconsulting.exceptionhandling.server.exception.ErrorResponseExcepti
 import jakarta.validation.ConstraintViolation
 import jakarta.validation.ConstraintViolationException
 import lsd.logging.log
-import org.springframework.core.Ordered
+import org.springframework.core.Ordered.LOWEST_PRECEDENCE
 import org.springframework.core.annotation.AnnotatedElementUtils
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpStatus
@@ -23,7 +23,7 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.server.ResponseStatusException
 
 @RestControllerAdvice
-@Order(Ordered.LOWEST_PRECEDENCE - 10) // not sure why but this should be lower than CustomResponseEntityExceptionHandler
+@Order(LOWEST_PRECEDENCE - 10) // not sure why but this should be lower than CustomResponseEntityExceptionHandler
 class ControllerExceptionHandler(
     private val unknownErrorHandler: UnknownErrorHandler,
     private val attributePopulator: AttributePopulator
@@ -51,7 +51,6 @@ class ControllerExceptionHandler(
     private fun handle(ex: ResponseStatusException, request: WebRequest): ResponseEntity<*> {
         val errorResponse = ErrorResponse(
             errorCode = ex.statusCode.toString(),
-//            messages = if (ex.message != null) listOf(ex.message!!) else listOf(),
             messages = listOf(ex.message ?: "Message missing"),
             attributes = attributePopulator.populateAttributes(ex, request)
         )
@@ -77,13 +76,11 @@ class ControllerExceptionHandler(
         return responseStatus?.code ?: INTERNAL_SERVER_ERROR
     }
 
-    private fun convert(constraintViolation: ConstraintViolation<*>): DataError {
-        return DataError(
-            message = constraintViolation.message,
-            value = constraintViolation.invalidValue.toString(),
-            name = constraintViolation.propertyPath.last().name,
-            code = constraintViolation.constraintDescriptor.annotation.annotationClass.simpleName)
-    }
+    private fun convert(constraintViolation: ConstraintViolation<*>) = DataError(
+        message = constraintViolation.message,
+        value = constraintViolation.invalidValue.toString(),
+        name = constraintViolation.propertyPath.last().name,
+        code = constraintViolation.constraintDescriptor.annotation.annotationClass.simpleName)
 
     companion object {
         private const val PARAMETER_VALIDATION_FAILED_ERROR_CODE = "INVALID_PARAMETER"

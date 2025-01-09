@@ -10,4 +10,3 @@ class DefaultRequestTracerConfiguration {
         return RequestTracer { null }
     }
 }
-

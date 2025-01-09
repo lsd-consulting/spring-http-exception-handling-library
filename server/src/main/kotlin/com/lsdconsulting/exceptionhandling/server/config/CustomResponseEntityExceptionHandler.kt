@@ -23,7 +23,6 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.context.request.WebRequest.SCOPE_REQUEST
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import org.springframework.web.util.WebUtils.ERROR_EXCEPTION_ATTRIBUTE
-import java.util.stream.Collectors
 
 /*
   The exceptions we are not handling here (explicitly):
@@ -147,22 +146,16 @@ class CustomResponseEntityExceptionHandler(
         return ResponseEntity(errorResponse, status)
     }
 
-    private fun dataErrorsFromBindingResults(bindingResult: BindingResult): List<DataError> {
-        return bindingResult
-            .fieldErrors
-            .stream()
-            .map { fieldError: FieldError -> convert(fieldError) }
-            .sorted(Comparator.comparing { obj: DataError -> obj.name + obj.value + obj.code!! })
-            .collect(Collectors.toList())
-    }
+    private fun dataErrorsFromBindingResults(bindingResult: BindingResult): List<DataError> = bindingResult
+        .fieldErrors
+        .map(this::convert)
+        .sortedWith(Comparator.comparing { obj: DataError -> obj.name + obj.value + obj.code!! })
 
-    private fun convert(fieldError: FieldError): DataError {
-        return DataError(
-            message = fieldError.defaultMessage,
-            name = fieldError.field,
-            code = fieldError.code,
-            value = fieldError.rejectedValue?.toString())
-    }
+    private fun convert(fieldError: FieldError) = DataError(
+        message = fieldError.defaultMessage,
+        name = fieldError.field,
+        code = fieldError.code,
+        value = fieldError.rejectedValue?.toString())
 
     companion object {
         private const val INVALID_ERROR_CODE = "INVALID"

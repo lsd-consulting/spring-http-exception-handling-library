@@ -6,13 +6,15 @@ import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestAttributes.SCOPE_REQUEST
 import org.springframework.web.context.request.WebRequest
 
+const val REST_REQUEST_RECEIVED_AT_ATTRIBUTE = "rest.request.receivedAt"
+
 @Component
 class AttributePopulator(private val requestTracer: RequestTracer) {
     fun populateAttributes(ex: Exception, request: WebRequest): Map<String, Any> {
-        val attributes: MutableMap<String, Any> = mutableMapOf()
+        val attributes = mutableMapOf<String, Any>()
         requestTracer.getTraceId()?.let { attributes[TRACE_ID_ATTRIBUTE] = it }
-        populateException(ex, attributes)
-        request.getAttribute("rest.request.receivedAt", SCOPE_REQUEST)?.toString()
+        populateException(ex = ex, attributes = attributes)
+        request.getAttribute(REST_REQUEST_RECEIVED_AT_ATTRIBUTE, SCOPE_REQUEST)?.toString()
             ?.let { attributes[START_TIME_ATTRIBUTE] = it }
         return attributes.toMap()
     }

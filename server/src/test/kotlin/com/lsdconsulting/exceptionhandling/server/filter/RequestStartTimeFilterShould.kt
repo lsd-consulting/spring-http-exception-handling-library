@@ -13,7 +13,7 @@ internal class RequestStartTimeFilterShould {
 
     @Test
     @Throws(ServletException::class, IOException::class)
-    fun useTimeProvider() {
+    internal fun `use time provider`() {
         val timeProvider = mockk<TimeProvider>()
         val underTest = RequestStartTimeFilter(timeProvider)
         val now = ZonedDateTime.now()

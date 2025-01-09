@@ -7,5 +7,5 @@ import java.time.ZonedDateTime
 data class IsoDateTimeRequest(
     @field:DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     @field:NotNull(message = "validation.missingValue")
-    val isoDateTime:  ZonedDateTime? = null
+    val isoDateTime: ZonedDateTime? = null
 )

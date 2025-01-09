@@ -28,14 +28,14 @@ import org.springframework.test.context.TestPropertySource
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
 @AutoConfigureObservability
-class PathVariableIntegrationShould(
+internal class PathVariableIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForConstraintViolationException_PathVariableWithWrongValue(approver: Approver) {
+    internal fun `return 400 for constraint violation exception path variable with wrong value`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/-100", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
@@ -43,7 +43,7 @@ class PathVariableIntegrationShould(
     }
 
     @Test
-    fun return400ForConstraintViolationException_PathVariableTooLong(approver: Approver) {
+    internal fun `return 400 for constraint violation exception  path variable too long`(approver: Approver) {
         testRestTemplate.getForEntity("/objects/pathVariableValidation/12345", String::class.java)
         val responseEntity = testRestTemplate.getForEntity("/objects/pathVariableValidation/12345", ErrorResponse::class.java)
 
@@ -52,7 +52,7 @@ class PathVariableIntegrationShould(
     }
 
     @Test
-    fun return400ForTypeMismatchException(approver: Approver) {
+    internal fun `return 400 for type mismatch exception`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/some_value", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))

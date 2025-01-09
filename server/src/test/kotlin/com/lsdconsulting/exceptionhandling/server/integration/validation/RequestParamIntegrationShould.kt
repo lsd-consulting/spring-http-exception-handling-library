@@ -28,14 +28,14 @@ import org.springframework.test.context.TestPropertySource
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
 @AutoConfigureObservability
-class RequestParamIntegrationShould(
+internal class RequestParamIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForMissingServletRequestParameterException(approver: Approver) {
+    internal fun `return 400 for missing servlet request parameter exception`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
@@ -43,7 +43,7 @@ class RequestParamIntegrationShould(
     }
 
     @Test
-    fun return400ForConstraintViolationException(approver: Approver) {
+    internal fun `return 400 for constraint violation exception`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects?someParamName=abcdef", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))

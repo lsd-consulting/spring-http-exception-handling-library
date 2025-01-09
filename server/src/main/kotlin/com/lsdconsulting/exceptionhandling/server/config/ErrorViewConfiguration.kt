@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.lang.Nullable
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.View
@@ -35,7 +36,7 @@ class ErrorViewConfiguration {
                 response.writer.append(objectMapper.writeValueAsString(model))
             }
 
-            override fun getContentType() = "application/json"
+            override fun getContentType() = APPLICATION_JSON_VALUE
         }
 
         @Bean

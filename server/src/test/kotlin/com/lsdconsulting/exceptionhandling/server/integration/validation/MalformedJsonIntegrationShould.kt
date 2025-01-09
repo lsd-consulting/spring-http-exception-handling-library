@@ -34,14 +34,14 @@ import org.springframework.test.context.TestPropertySource
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
 @AutoConfigureObservability
-class MalformedJsonIntegrationShould(
+internal class MalformedJsonIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForHttpMessageNotReadableException(approver: Approver) {
+    internal fun `return 400 for http message not readable exception`(approver: Approver) {
         val responseEntity = testRestTemplate.postForEntity("/objects", WrongRequest(number = "abc"), ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
@@ -50,7 +50,7 @@ class MalformedJsonIntegrationShould(
     }
 
     @Test
-    fun return400JsonEOFException(approver: Approver) {
+    internal fun `return 400 json e o f exception`(approver: Approver) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val request = HttpEntity("{", headers)
@@ -61,7 +61,7 @@ class MalformedJsonIntegrationShould(
     }
 
     @Test
-    fun return400MismatchedInputException(approver: Approver) {
+    internal fun `return 400 mismatched input exception`(approver: Approver) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val request = HttpEntity("true", headers)
@@ -72,7 +72,7 @@ class MalformedJsonIntegrationShould(
     }
 
     @Test
-    fun return400ForHttpMessageNotReadableException_IsoDateTimeMalformed(approver: Approver) {
+    internal fun `return 400 for http message not readable exception  iso date time malformed`(approver: Approver) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val request = HttpEntity(WrongIsoDateTimeRequest(isoDateTime = "01-02-2021"), headers)

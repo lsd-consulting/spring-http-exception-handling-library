@@ -1,5 +1,6 @@
 package com.lsdconsulting.exceptionhandling.server.config
 
+import com.lsdconsulting.exceptionhandling.server.config.attribute.REST_REQUEST_RECEIVED_AT_ATTRIBUTE
 import com.lsdconsulting.exceptionhandling.server.tracer.RequestTracer
 import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
@@ -30,7 +31,7 @@ class ErrorAttributesHandler(
         val attributes = mutableMapOf<String, Any?>()
         valueOf(srcErrorAttributes["path"])?.let { attributes["path"] = it }
         valueOf(srcErrorAttributes["exception"])?.let { attributes["exception"] = it }
-        valueOf(webRequest.getAttribute("rest.request.receivedAt", RequestAttributes.SCOPE_REQUEST))?.let { attributes["startTime"] = it }
+        valueOf(webRequest.getAttribute(REST_REQUEST_RECEIVED_AT_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST))?.let { attributes["startTime"] = it }
         (requestTracer.getTraceId()?:parseTraceId(webRequest)).let { attributes["traceId"] = it  }
 
         // Messages

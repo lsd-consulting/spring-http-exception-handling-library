@@ -10,7 +10,7 @@ plugins {
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
     id 'com.palantir.git-version' version '3.1.0'
 }
-
+description = 'Library for standardising all HTTP related exception handling'
 group = 'io.github.lsd-consulting'
 version = gitVersion().replaceAll("^v", "")
 logger.lifecycle("Build Version = ${version}")

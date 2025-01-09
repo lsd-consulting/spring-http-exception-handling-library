@@ -33,7 +33,7 @@ import java.io.IOException
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
 @AutoConfigureObservability
-class ErrorAttributesHandlerIntegrationShould(
+internal class ErrorAttributesHandlerIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
@@ -41,19 +41,22 @@ class ErrorAttributesHandlerIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun return404ReplyWithErrorBody(approver: Approver) {
+    internal fun `return 404 reply with error body`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/non-existent-resource", ErrorResponse::class.java)
+
         assertThat(responseEntity.statusCode, `is`(NOT_FOUND))
         approver.assertApproved(asString(responseEntity))
     }
 
     @Test
     @Throws(JsonProcessingException::class)
-    fun return404ReplyWithErrorBodyForBrowserRequest(approver: Approver) {
+    internal fun `return 404 reply with error body for browser request`(approver: Approver) {
         val headers = HttpHeaders()
         headers["Accept"] = "text/html,application/xhtml+xml,application/xml"
         val entity = HttpEntity<String>(headers)
+
         val responseEntity = testRestTemplate.exchange("/non-existent-resource", GET, entity, ErrorResponse::class.java)
+
         assertThat(responseEntity.statusCode, `is`(NOT_FOUND))
         approver.assertApproved(asString(responseEntity))
     }

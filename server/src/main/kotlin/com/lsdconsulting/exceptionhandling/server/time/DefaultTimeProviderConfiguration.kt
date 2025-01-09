@@ -8,7 +8,5 @@ import java.time.ZonedDateTime.now
 class DefaultTimeProviderConfiguration {
     @Bean
     @ConditionalOnMissingBean
-    fun timeProvider(): TimeProvider {
-        return TimeProvider { now(ZoneId.of("UTC")) }
-    }
+    fun timeProvider() = TimeProvider { now(ZoneId.of("UTC")) }
 }

@@ -13,23 +13,26 @@ internal class ErrorResponseExceptionShould {
     private val message = secure().nextAlphanumeric(20)
 
     @Test
-    fun preserveExceptionMessageThroughErrorDetailResponseConstructor() {
-        val result: ErrorResponseException =
-            object : ErrorResponseException(ErrorResponse(messages = listOf(message)), OK) {}
+    internal fun `preserve exception message through error detail response constructor`() {
+        val result = object : ErrorResponseException(
+            errorResponse = ErrorResponse(messages = listOf(message)),
+            httpStatus = OK
+        ) {}
         assertThat(result.message, `is`(message))
     }
 
     @Test
-    fun preserveMessageThroughErrorDetailResponseConstructor() {
-        val result: ErrorResponseException =
-            object : ErrorResponseException(ErrorResponse(messages = listOf(message)), OK) {}
+    internal fun `preserve message through error detail response constructor`() {
+        val result = object : ErrorResponseException(
+            errorResponse = ErrorResponse(messages = listOf(message)),
+            httpStatus = OK
+        ) {}
         assertThat(result.errorResponse.messages[0], `is`(message))
     }
 
     @Test
-    fun handleEmptyMessageThroughErrorDetailResponseConstructor() {
-        val result: ErrorResponseException =
-            object : ErrorResponseException(ErrorResponse(), OK) {}
+    internal fun `handle empty message through error detail response constructor`() {
+        val result = object : ErrorResponseException(errorResponse = ErrorResponse(), httpStatus = OK) {}
         assertThat(result.message, `is`("Error message unavailable"))
     }
 }

@@ -27,7 +27,7 @@ internal class BraveRequestTracerConfigurationShould {
     private lateinit var context: AnnotationConfigApplicationContext
 
     @AfterEach
-    fun closeContext() {
+    internal fun `close context`() {
         context.close()
     }
 

@@ -16,7 +16,7 @@ internal class UnknownErrorHandlerShould {
     private val underTest = UnknownErrorHandler(attributePopulator)
 
     @Test
-    fun handleExceptionWithoutMessage() {
+    internal fun `handle exception without message`() {
         every { attributePopulator.populateAttributes(any(), any())} returns mapOf()
 
         val result = underTest.handle(Exception(), request)
@@ -25,7 +25,7 @@ internal class UnknownErrorHandlerShould {
     }
 
     @Test
-    fun handleExceptionWithMessage() {
+    internal fun `handle exception with message`() {
         every { attributePopulator.populateAttributes(any(), any())} returns mapOf()
 
         val result = underTest.handle(Exception("message"), request)

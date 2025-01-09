@@ -36,23 +36,25 @@ import java.util.stream.Stream
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
 @AutoConfigureObservability
-class ClientBasedExceptionHandlingIntegrationShould(
+internal class ClientBasedExceptionHandlingIntegrationShould(
     @Autowired private val testClient: TestClient
 ) {
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
     @Throws(ErrorResponseException::class)
-    fun returnObjectWithSameObjectIdAsRequested() {
-        val id = SecureRandom().nextLong(1000, Long.MAX_VALUE)
+    internal fun `return object with same object id as requested`() {
+        val id = SecureRandom().nextLong(1000L, Long.MAX_VALUE)
+
         val testResponse = testClient.getObject(id)
+
         assertThat(testResponse?.message, `is`("message"))
         assertThat(testResponse?.id, `is`(id))
     }
 
     @Test
     @Throws(IOException::class)
-    fun throwInternalServerExceptionForRuntimeException(approver: Approver) {
+    internal fun `throw internal server exception for runtime exception`(approver: Approver) {
         val resultException = assertThrows(InternalServerException::class.java) { testClient.withTestException }
 
         assertThat(resultException.httpStatus, `is`(INTERNAL_SERVER_ERROR))
@@ -61,7 +63,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwInternalServerExceptionWithDataError(approver: Approver) {
+    internal fun `throw internal server exception with data error`(approver: Approver) {
         val value = 9999999L
         val resultException = assertThrows(InternalServerException::class.java) { testClient.getWithExceptionAndCustomParam(value) }
 
@@ -71,7 +73,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwInternalServerExceptionWithMessageForRuntimeException(approver: Approver) {
+    internal fun `throw internal server exception with message for runtime exception`(approver: Approver) {
         val resultException = assertThrows(InternalServerException::class.java) { testClient.withException }
 
         assertThat(resultException.httpStatus, `is`(INTERNAL_SERVER_ERROR))
@@ -80,7 +82,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwInternalServerExceptionWithMessageForCheckedException(approver: Approver) {
+    internal fun `throw internal server exception with message for checked exception`(approver: Approver) {
         val resultException = assertThrows(InternalServerException::class.java) { testClient.withCheckedException }
 
         assertThat(resultException.httpStatus, `is`(INTERNAL_SERVER_ERROR))
@@ -89,7 +91,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwInternalServerExceptionDisregardingResourceAnnotation(approver: Approver) {
+    internal fun `throw internal server exception disregarding resource annotation`(approver: Approver) {
         val resultException = assertThrows(InternalServerException::class.java) { testClient.withExceptionAndAnnotatedStatusResource }
 
         assertThat(resultException.httpStatus, `is`(INTERNAL_SERVER_ERROR))
@@ -98,7 +100,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwConflictExceptionFromAnnotatedExceptionStatus(approver: Approver) {
+    internal fun `throw conflict exception from annotated exception status`(approver: Approver) {
         val resultException = assertThrows(ConflictException::class.java) { testClient.withAnnotatedException }
 
         assertThat(resultException.httpStatus, `is`(CONFLICT))
@@ -107,7 +109,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwBadRequestExceptionForMissingServletRequestParameterException(approver: Approver) {
+    internal fun `throw bad request exception for missing servlet request parameter exception`(approver: Approver) {
         val resultException = assertThrows(BadRequestException::class.java) { testClient.getObjectByMessage(null) }
 
         assertThat(resultException.httpStatus, `is`(BAD_REQUEST))
@@ -116,7 +118,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwNotFoundException(approver: Approver) {
+    internal fun `throw not found exception`(approver: Approver) {
         val resultException = assertThrows(NotFoundException::class.java) { testClient.withNotFoundException }
 
         assertThat(resultException.httpStatus, `is`(NOT_FOUND))
@@ -125,7 +127,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwConflictException(approver: Approver) {
+    internal fun `throw conflict exception`(approver: Approver) {
         val resultException = assertThrows(ConflictException::class.java) { testClient.withConflictException }
 
         assertThat(resultException.httpStatus, `is`(CONFLICT))
@@ -134,7 +136,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @Test
     @Throws(IOException::class)
-    fun throwPreconditionFailedException(approver: Approver) {
+    internal fun `throw precondition failed exception`(approver: Approver) {
         val resultException = assertThrows(PreconditionFailedException::class.java) { testClient.withPreconditionFailedException }
 
         assertThat(resultException.httpStatus, `is`(PRECONDITION_FAILED))
@@ -143,7 +145,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @ParameterizedTest
     @MethodSource("provideResponseCodeAndExceptionType")
-    fun throwExceptionCorrespondingToResponseCodeWhenResponseMalformed(statusCode: Int, exception: Class<out ErrorResponseException?>?) {
+    internal fun `throw exception corresponding to response code when response malformed`(statusCode: Int, exception: Class<out ErrorResponseException?>?) {
         val resultException = assertThrows(exception) { testClient.getMalformedResponse(statusCode) }
 
         assertThat(resultException, `is`(notNullValue()))
@@ -152,7 +154,7 @@ class ClientBasedExceptionHandlingIntegrationShould(
 
     @ParameterizedTest
     @MethodSource("provideResponseCodeAndExceptionType")
-    fun throwExceptionCorrespondingToResponseCodeWhenEmptyResponse(statusCode: Int, exception: Class<out ErrorResponseException?>?) {
+    internal fun `throw exception corresponding to response code when empty response`(statusCode: Int, exception: Class<out ErrorResponseException?>?) {
         val resultException = assertThrows(exception) { testClient.getEmptyResponse(statusCode) }
 
         assertThat(resultException, `is`(notNullValue()))
@@ -160,24 +162,20 @@ class ClientBasedExceptionHandlingIntegrationShould(
     }
 
     @Throws(JsonProcessingException::class)
-    private fun asString(errorResponse: ErrorResponse): String {
-        return objectWriter.writeValueAsString(errorResponse)
-    }
+    private fun asString(errorResponse: ErrorResponse) = objectWriter.writeValueAsString(errorResponse)
 
     companion object {
         @JvmStatic
-        private fun provideResponseCodeAndExceptionType(): Stream<Arguments> {
-            return Stream.of(
-                Arguments.of(BAD_REQUEST.value(), BadRequestException::class.java),
-                Arguments.of(NOT_FOUND.value(), NotFoundException::class.java),
-                Arguments.of(CONFLICT.value(), ConflictException::class.java),
-                Arguments.of(PRECONDITION_FAILED.value(), PreconditionFailedException::class.java),
-                Arguments.of(INTERNAL_SERVER_ERROR.value(), InternalServerException::class.java),
-                Arguments.of(NOT_IMPLEMENTED.value(), NotImplementedException::class.java),
-                Arguments.of(BAD_GATEWAY.value(), BadGatewayException::class.java),
-                Arguments.of(SERVICE_UNAVAILABLE.value(), ServiceUnavailableException::class.java),
-                Arguments.of(GATEWAY_TIMEOUT.value(), GatewayTimeoutException::class.java)
-            )
-        }
+        private fun provideResponseCodeAndExceptionType() = Stream.of(
+            Arguments.of(BAD_REQUEST.value(), BadRequestException::class.java),
+            Arguments.of(NOT_FOUND.value(), NotFoundException::class.java),
+            Arguments.of(CONFLICT.value(), ConflictException::class.java),
+            Arguments.of(PRECONDITION_FAILED.value(), PreconditionFailedException::class.java),
+            Arguments.of(INTERNAL_SERVER_ERROR.value(), InternalServerException::class.java),
+            Arguments.of(NOT_IMPLEMENTED.value(), NotImplementedException::class.java),
+            Arguments.of(BAD_GATEWAY.value(), BadGatewayException::class.java),
+            Arguments.of(SERVICE_UNAVAILABLE.value(), ServiceUnavailableException::class.java),
+            Arguments.of(GATEWAY_TIMEOUT.value(), GatewayTimeoutException::class.java)
+        )
     }
 }

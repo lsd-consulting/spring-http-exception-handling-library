@@ -28,14 +28,14 @@ import org.springframework.test.context.TestPropertySource
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
 @AutoConfigureObservability
-class UnsupportedContentTypeIntegrationShould(
+internal class UnsupportedContentTypeIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForHttpMessageNotReadableException(approver: Approver) {
+    internal fun `return400 for http message not readable exception`(approver: Approver) {
         val responseEntity = testRestTemplate.postForEntity("/objects", "{", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(UNSUPPORTED_MEDIA_TYPE))

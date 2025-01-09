@@ -112,6 +112,11 @@ class TestController {
     fun getWithResponseStatusException(): Unit =
         throw ResponseStatusException(INSUFFICIENT_STORAGE, "Insufficient storage")
 
+    @GetMapping("/internalServerError")
+    fun getWithDatabaseResponseException(): TestResponse {
+        throw ResponseStatusException(INTERNAL_SERVER_ERROR, "Server error")
+    }
+
     @GetMapping("/generateResponseStatusExceptionNoMessage")
     fun getWithResponseStatusExceptionNoMessage(): Unit =
         throw ResponseStatusException(INSUFFICIENT_STORAGE)

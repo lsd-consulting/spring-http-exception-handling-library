@@ -13,7 +13,7 @@ import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebSe
 internal class RequestFilterConfigurationShould {
 
     @Test
-    fun registerRequestStartTimeFilter() {
+    internal fun `register request start time filter`() {
         AnnotationConfigServletWebServerApplicationContext().use { context ->
             TestPropertyValues.of("server.port=0").applyTo(context)
             context.register(
