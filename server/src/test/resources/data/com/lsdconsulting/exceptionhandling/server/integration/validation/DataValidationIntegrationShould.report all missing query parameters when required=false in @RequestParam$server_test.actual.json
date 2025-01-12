@@ -1,0 +1,20 @@
+{
+  "errorCode" : "INVALID_PARAMETER",
+  "messages" : [ "Validation failed" ],
+  "dataErrors" : [ {
+    "code" : "NotBlank",
+    "name" : "arg0",
+    "value" : null,
+    "message" : "must not be blank"
+  }, {
+    "code" : "NotNull",
+    "name" : "arg1",
+    "value" : null,
+    "message" : "must not be null"
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "ConstraintViolationException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

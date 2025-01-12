@@ -63,8 +63,23 @@ class TestController {
     )
 
     @GetMapping("/multipleParams")
-    fun getObjectByMultipleParams(@RequestParam @Size(max = 3) @NotBlank someStringParam: String,
-                                  @RequestParam @Max(3) someNumericParam: Int) = listOf(
+    fun getObjectByMultipleParams(
+        @RequestParam @Size(max = 3) someStringParam: String,
+        @RequestParam @Max(3) someNumericParam: Int
+    ) = listOf(
+        TestResponse(
+            message = "someMessage",
+            number = 5L,
+            id = 1L,
+            created = ZonedDateTime.now()
+        )
+    )
+
+    @GetMapping("/multipleSemiOptionalParams")
+    fun getObjectByMultipleSemiOptionalParams(
+        @RequestParam(required = false) @NotBlank someStringParam1: String,
+        @RequestParam(required = false) @NotNull someStringParam2: String
+    ) = listOf(
         TestResponse(
             message = "someMessage",
             number = 5L,

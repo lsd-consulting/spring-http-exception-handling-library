@@ -78,7 +78,7 @@ class ControllerExceptionHandler(
 
     private fun convert(constraintViolation: ConstraintViolation<*>) = DataError(
         message = constraintViolation.message,
-        value = constraintViolation.invalidValue.toString(),
+        value = constraintViolation.invalidValue?.toString(),
         name = constraintViolation.propertyPath.last().name,
         code = constraintViolation.constraintDescriptor.annotation.annotationClass.simpleName)
 

@@ -92,7 +92,24 @@ internal class DataValidationIntegrationShould(
 
     @Test
     internal fun `return 400 for multiple wrong query params`(approver: Approver) {
-        val responseEntity = getMultipleQueryParams()
+        val responseEntity = testRestTemplate.getForEntity(
+            "/objects/multipleParams?someStringParam=${"1234"}&someNumericParam=${"4"}",
+            ErrorResponse::class.java
+        )
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    internal fun `report only the first missing query parameter when required=true in @RequestParam`(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/multipleParams", ErrorResponse::class.java)
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    internal fun `report all missing query parameters when required=false in @RequestParam`(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/multipleSemiOptionalParams", ErrorResponse::class.java)
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
@@ -102,10 +119,6 @@ internal class DataValidationIntegrationShould(
         headers.contentType = APPLICATION_JSON
         val requestEntity = HttpEntity(testRequest, headers)
         return testRestTemplate.exchange("/objects", POST, requestEntity, ErrorResponse::class.java)
-    }
-
-    private fun getMultipleQueryParams(): ResponseEntity<ErrorResponse> {
-        return testRestTemplate.getForEntity("/objects/multipleParams?someStringParam=1234&someNumericParam=4", ErrorResponse::class.java)
     }
 
     private fun postIsoDateTime(testRequest: IsoDateTimeRequest) =
