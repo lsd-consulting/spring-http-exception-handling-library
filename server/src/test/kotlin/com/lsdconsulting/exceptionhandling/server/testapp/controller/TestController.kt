@@ -7,10 +7,7 @@ import com.lsdconsulting.exceptionhandling.server.testapp.api.request.IsoDateTim
 import com.lsdconsulting.exceptionhandling.server.testapp.api.request.TestRequest
 import com.lsdconsulting.exceptionhandling.server.testapp.api.response.TestResponse
 import jakarta.validation.Valid
-import jakarta.validation.constraints.Max
-import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.Positive
-import jakarta.validation.constraints.Size
+import jakarta.validation.constraints.*
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -60,6 +57,16 @@ class TestController {
     fun getObjectBy(@RequestParam @Max(3) someParamName: String) = listOf(
         TestResponse(
             message = someParamName,
+            number = 5L,
+            id = 1L,
+            created = ZonedDateTime.now())
+    )
+
+    @GetMapping("/multipleParams")
+    fun getObjectByMultipleParams(@RequestParam @Size(max = 3) @NotBlank someStringParam: String,
+                                  @RequestParam @Max(3) someNumericParam: Int) = listOf(
+        TestResponse(
+            message = "someMessage",
             number = 5L,
             id = 1L,
             created = ZonedDateTime.now())
