@@ -59,12 +59,12 @@ class ControllerExceptionHandler(
 
     private fun handle(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<*> {
         val bodyDataErrors = ex.constraintViolations
-            .map { constraintViolation: ConstraintViolation<*> -> convert(constraintViolation) }
-            .sortedBy { it.name + it.value + it.code }
+            ?.map { constraintViolation: ConstraintViolation<*> -> convert(constraintViolation) }
+            ?.sortedBy { it.name + it.value + it.code }
         val errorResponse = ErrorResponse(
             errorCode = PARAMETER_VALIDATION_FAILED_ERROR_CODE,
             messages = listOf(VALIDATION_FAILED),
-            dataErrors = bodyDataErrors,
+            dataErrors = bodyDataErrors ?: emptyList(),
             attributes = attributePopulator.populateAttributes(ex, request)
         )
         return ResponseEntity(errorResponse, BAD_REQUEST)
@@ -80,7 +80,7 @@ class ControllerExceptionHandler(
         message = constraintViolation.message,
         value = constraintViolation.invalidValue?.toString(),
         name = constraintViolation.propertyPath.last().name,
-        code = constraintViolation.constraintDescriptor.annotation.annotationClass.simpleName)
+        code = constraintViolation.constraintDescriptor?.annotation?.annotationClass?.simpleName)
 
     companion object {
         private const val PARAMETER_VALIDATION_FAILED_ERROR_CODE = "INVALID_PARAMETER"
