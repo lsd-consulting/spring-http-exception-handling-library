@@ -1,10 +1,10 @@
 {
-  "errorCode" : "NOT_FOUND",
-  "messages" : [ "Not Found" ],
+  "errorCode" : "UNKNOWN_ERROR",
+  "messages" : [ "No static resource non-existent-resource." ],
   "dataErrors" : [ ],
   "attributes" : {
-    "path" : "/non-existent-resource",
-    "startTime" : "2020-11-27T11:17:40.095818Z",
-    "traceId" : "40e1488ed0001adc"
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "NoResourceFoundException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
   }
 }
