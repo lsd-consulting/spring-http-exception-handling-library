@@ -3,9 +3,9 @@
   "messages" : [ "Data type error" ],
   "dataErrors" : [ {
     "code" : "typeMismatch",
-    "name" : null,
+    "name" : "objectId",
     "value" : "some_value",
-    "message" : "Failed to convert value of type 'java.lang.String' to required type 'long'; nested exception is java.lang.NumberFormatException: For input string: \"some_value\""
+    "message" : "Method parameter 'objectId': Failed to convert value of type 'java.lang.String' to required type 'long'; For input string: \"some_value\""
   } ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",

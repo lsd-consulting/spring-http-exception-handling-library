@@ -15,6 +15,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -33,50 +34,82 @@ import org.springframework.test.context.TestPropertySource
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
-class DataValidationIntegrationShould(
+@AutoConfigureObservability
+internal class DataValidationIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForHttpMessageNotReadableException_MissingBody(approver: Approver) {
+    internal fun `return 400 for http message not readable exception missing body`(approver: Approver) {
         val responseEntity = post(null)
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
-    fun return400ForMethodArgumentNotValidException_SinglePropertyInvalidData(approver: Approver) {
+    internal fun `return 400 for method argument not valid exception single property invalid data`(approver: Approver) {
         val responseEntity = post(TestRequest(message = "b", number = 5L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
-    fun return400ForMethodArgumentNotValidException_SinglePropertyMissingData(approver: Approver) {
+    internal fun `return 400 for method argument not valid exception single property missing data`(approver: Approver) {
         val responseEntity = post(TestRequest(number = 5L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
-    fun return400ForMethodArgumentNotValidException_MultiplePropertyInvalidData(approver: Approver) {
+    internal fun `return 400 for method argument not valid exception single property null`(approver: Approver) {
+        val responseEntity = post(TestRequest(message = null, number = 5L))
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    internal fun `return 400 for method argument not valid exception multiple property invalid data`(approver: Approver) {
         val responseEntity = post(TestRequest(message = "b", number = 3L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
-    fun return400ForMethodArgumentNotValidException_MultiplePropertyMissingData(approver: Approver) {
+    internal fun `return 400 for method argument not valid exception multiple property missing data`(approver: Approver) {
         val responseEntity = post(TestRequest())
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
-    fun return400ForMethodArgumentNotValidException_MissingIsoDateTime(approver: Approver) {
+    internal fun `return 400 for method argument not valid exception missing iso date time`(approver: Approver) {
         val responseEntity = postIsoDateTime(IsoDateTimeRequest())
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    internal fun `return 400 for multiple wrong query params`(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity(
+            "/objects/multipleParams?someStringParam=${"1234"}&someNumericParam=${"4"}",
+            ErrorResponse::class.java
+        )
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    internal fun `report only the first missing query parameter when required=true in @RequestParam`(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/multipleParams", ErrorResponse::class.java)
+        assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        approver.assertApproved(asString(responseEntity.body!!))
+    }
+
+    @Test
+    internal fun `report all missing query parameters when required=false in @RequestParam`(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/multipleSemiOptionalParams", ErrorResponse::class.java)
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))
     }
@@ -88,9 +121,8 @@ class DataValidationIntegrationShould(
         return testRestTemplate.exchange("/objects", POST, requestEntity, ErrorResponse::class.java)
     }
 
-    private fun postIsoDateTime(testRequest: IsoDateTimeRequest): ResponseEntity<ErrorResponse> {
-        return testRestTemplate.exchange("/objects/isodatetime", POST, HttpEntity(testRequest), ErrorResponse::class.java)
-    }
+    private fun postIsoDateTime(testRequest: IsoDateTimeRequest) =
+        testRestTemplate.exchange("/objects/isodatetime", POST, HttpEntity(testRequest), ErrorResponse::class.java)
 
     @Throws(JsonProcessingException::class)
     private fun asString(errorResponse: ErrorResponse) = objectWriter.writeValueAsString(errorResponse)

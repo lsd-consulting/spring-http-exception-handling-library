@@ -15,18 +15,18 @@ internal class DefaultTimeProviderConfigurationShould {
     private lateinit var context: AnnotationConfigApplicationContext
 
     @AfterEach
-    fun closeContext() {
+    internal fun `close context`() {
         context.close()
     }
 
     @Test
-    fun notRegisterIfTimeProviderPresent() {
+    internal fun `not register if time provider present`() {
         context = load(true)
         assertThat(context.getBean(TimeProvider::class.java).get(), `is`(custom))
     }
 
     @Test
-    fun registerIfTimeProviderPresent() {
+    internal fun `register if time provider present`() {
         context = load(false)
         val now = ZonedDateTime.now()
         assertThat(context.getBean(TimeProvider::class.java).get(), ZonedDateTimeMatchers.after(now))

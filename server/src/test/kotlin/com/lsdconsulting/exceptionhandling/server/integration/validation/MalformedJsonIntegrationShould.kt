@@ -11,12 +11,14 @@ import com.lsdconsulting.exceptionhandling.server.testapp.api.request.WrongReque
 import com.lsdconsulting.exceptionhandling.server.testapp.client.TestClient
 import com.oneeyedmen.okeydoke.Approver
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
@@ -26,27 +28,29 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.MediaType
 import org.springframework.test.context.TestPropertySource
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = [TestApplication::class])
+@SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
 @ExtendWith(ResourcesApprovalsExtension::class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
-class MalformedJsonIntegrationShould(
+@AutoConfigureObservability
+internal class MalformedJsonIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForHttpMessageNotReadableException(approver: Approver) {
+    internal fun `return 400 for http message not readable exception`(approver: Approver) {
         val responseEntity = testRestTemplate.postForEntity("/objects", WrongRequest(number = "abc"), ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.body, `is`(notNullValue()))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
-    fun return400JsonEOFException(approver: Approver) {
+    internal fun `return 400 json e o f exception`(approver: Approver) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val request = HttpEntity("{", headers)
@@ -57,7 +61,7 @@ class MalformedJsonIntegrationShould(
     }
 
     @Test
-    fun return400MismatchedInputException(approver: Approver) {
+    internal fun `return 400 mismatched input exception`(approver: Approver) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val request = HttpEntity("true", headers)
@@ -68,7 +72,7 @@ class MalformedJsonIntegrationShould(
     }
 
     @Test
-    fun return400ForHttpMessageNotReadableException_IsoDateTimeMalformed(approver: Approver) {
+    internal fun `return 400 for http message not readable exception  iso date time malformed`(approver: Approver) {
         val headers = HttpHeaders()
         headers.contentType = MediaType.APPLICATION_JSON
         val request = HttpEntity(WrongIsoDateTimeRequest(isoDateTime = "01-02-2021"), headers)

@@ -13,6 +13,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -26,14 +27,15 @@ import org.springframework.test.context.TestPropertySource
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
-class PathVariableIntegrationShould(
+@AutoConfigureObservability
+internal class PathVariableIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForConstraintViolationException_PathVariableWithWrongValue(approver: Approver) {
+    internal fun `return 400 for constraint violation exception path variable with wrong value`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/-100", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
@@ -41,7 +43,8 @@ class PathVariableIntegrationShould(
     }
 
     @Test
-    fun return400ForConstraintViolationException_PathVariableTooLong(approver: Approver) {
+    internal fun `return 400 for constraint violation exception  path variable too long`(approver: Approver) {
+        testRestTemplate.getForEntity("/objects/pathVariableValidation/12345", String::class.java)
         val responseEntity = testRestTemplate.getForEntity("/objects/pathVariableValidation/12345", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
@@ -49,8 +52,8 @@ class PathVariableIntegrationShould(
     }
 
     @Test
-    fun return400ForTypeMismatchException(approver: Approver) {
-        val responseEntity = testRestTemplate.getForEntity("/objects/some_value/", ErrorResponse::class.java)
+    internal fun `return 400 for type mismatch exception`(approver: Approver) {
+        val responseEntity = testRestTemplate.getForEntity("/objects/some_value", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         approver.assertApproved(asString(responseEntity.body!!))

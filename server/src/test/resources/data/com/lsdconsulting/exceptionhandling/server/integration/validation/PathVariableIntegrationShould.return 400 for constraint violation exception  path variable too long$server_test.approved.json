@@ -2,15 +2,10 @@
   "errorCode" : "INVALID_PARAMETER",
   "messages" : [ "Validation failed" ],
   "dataErrors" : [ {
-    "code" : "Min",
-    "name" : "objectId",
-    "value" : "-100",
-    "message" : "must be greater than or equal to 1000"
-  }, {
-    "code" : "Positive",
-    "name" : "objectId",
-    "value" : "-100",
-    "message" : "must be greater than 0"
+    "code" : "Size",
+    "name" : "arg0",
+    "value" : "12345",
+    "message" : "size must be between 0 and 3"
   } ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",

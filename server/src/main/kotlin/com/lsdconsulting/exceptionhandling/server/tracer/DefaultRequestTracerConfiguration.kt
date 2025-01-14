@@ -7,11 +7,6 @@ class DefaultRequestTracerConfiguration {
     @Bean
     @ConditionalOnMissingBean
     fun requestTracer(): RequestTracer {
-        return object : RequestTracer {
-            override fun getTraceId(): String? {
-                return null
-            }
-        }
+        return RequestTracer { null }
     }
 }
-

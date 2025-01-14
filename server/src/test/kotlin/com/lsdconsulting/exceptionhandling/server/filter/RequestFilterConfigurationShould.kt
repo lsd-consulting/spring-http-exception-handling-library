@@ -13,7 +13,7 @@ import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebSe
 internal class RequestFilterConfigurationShould {
 
     @Test
-    fun registerRequestStartTimeFilter() {
+    internal fun `register request start time filter`() {
         AnnotationConfigServletWebServerApplicationContext().use { context ->
             TestPropertyValues.of("server.port=0").applyTo(context)
             context.register(
@@ -25,8 +25,9 @@ internal class RequestFilterConfigurationShould {
             val servletContext = context.servletContext!!
             assertThat(servletContext, notNullValue())
             val filterRegistrations = servletContext.filterRegistrations
-            assertThat(filterRegistrations, hasKey("requestStartTimeFilter"))
-            assertThat(filterRegistrations["requestStartTimeFilter"]!!.className, `is`(RequestStartTimeFilter::class.java.name))
+            assertThat(filterRegistrations, notNullValue())
+            assertThat(filterRegistrations, hasKey("registerRequestStartTimeFilter"))
+            assertThat(filterRegistrations["registerRequestStartTimeFilter"]!!.className, `is`(RequestStartTimeFilter::class.java.name))
         }
     }
 }

@@ -13,6 +13,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.boot.test.web.client.TestRestTemplate
@@ -26,14 +27,15 @@ import org.springframework.test.context.TestPropertySource
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
-class RequestParamIntegrationShould(
+@AutoConfigureObservability
+internal class RequestParamIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForMissingServletRequestParameterException(approver: Approver) {
+    internal fun `return 400 for missing servlet request parameter exception`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
@@ -41,7 +43,7 @@ class RequestParamIntegrationShould(
     }
 
     @Test
-    fun return400ForConstraintViolationException(approver: Approver) {
+    internal fun `return 400 for constraint violation exception`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects?someParamName=abcdef", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))

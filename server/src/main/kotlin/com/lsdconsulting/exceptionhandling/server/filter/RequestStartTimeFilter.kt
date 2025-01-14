@@ -1,13 +1,14 @@
 package com.lsdconsulting.exceptionhandling.server.filter
 
+import com.lsdconsulting.exceptionhandling.server.config.attribute.REST_REQUEST_RECEIVED_AT_ATTRIBUTE
 import com.lsdconsulting.exceptionhandling.server.time.TimeProvider
+import jakarta.servlet.FilterChain
+import jakarta.servlet.ServletException
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
-import java.time.format.DateTimeFormatter
-import javax.servlet.FilterChain
-import javax.servlet.ServletException
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
+import java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
 class RequestStartTimeFilter(
     private val timeProvider: TimeProvider
@@ -15,11 +16,7 @@ class RequestStartTimeFilter(
 
     @Throws(ServletException::class, IOException::class)
     public override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
-        request.setAttribute(START_TIME_ATTRIBUTE, timeProvider.get().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME))
+        request.setAttribute(REST_REQUEST_RECEIVED_AT_ATTRIBUTE, timeProvider.get().format(ISO_OFFSET_DATE_TIME))
         filterChain.doFilter(request, response)
-    }
-
-    companion object {
-        const val START_TIME_ATTRIBUTE = "rest.request.receivedAt"
     }
 }

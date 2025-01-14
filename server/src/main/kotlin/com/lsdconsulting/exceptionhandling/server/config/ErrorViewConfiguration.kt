@@ -1,6 +1,8 @@
 package com.lsdconsulting.exceptionhandling.server.config
 
 import com.lsdconsulting.exceptionhandling.api.mapper.ObjectMapperBuilder.objectMapper
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.autoconfigure.condition.*
 import org.springframework.boot.autoconfigure.template.TemplateAvailabilityProviders
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver
@@ -10,15 +12,15 @@ import org.springframework.context.annotation.Conditional
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.type.AnnotatedTypeMetadata
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.lang.Nullable
 import org.springframework.web.servlet.ModelAndView
 import org.springframework.web.servlet.View
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 @Configuration
 class ErrorViewConfiguration {
 
+    @Suppress("unused")
     @ConditionalOnProperty(prefix = "server.error.whitelabel", name = ["enabled"], matchIfMissing = true)
     @Conditional(ErrorTemplateMissingCondition::class)
     class CustomErrorViewConfiguration {
@@ -34,7 +36,7 @@ class ErrorViewConfiguration {
                 response.writer.append(objectMapper.writeValueAsString(model))
             }
 
-            override fun getContentType() = "application/json"
+            override fun getContentType() = APPLICATION_JSON_VALUE
         }
 
         @Bean

@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.cloud.openfeign.EnableFeignClients
@@ -33,7 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger
 @TestPropertySource("classpath:application-retry.properties")
 @EnableFeignClients(clients = [DeadServiceClient::class, TestClient::class])
 @Import(IntegrationTestConfiguration::class, RequestCountingConfig::class)
-class ClientShould(
+@AutoConfigureObservability
+internal class ClientShould(
     @Value("\${feign.retry.maxAttempts}") private val maxAttempts: Int = 0,
     @Autowired private  val deadServiceClient: DeadServiceClient,
     @Autowired private  val testClient: TestClient,
@@ -44,32 +46,28 @@ class ClientShould(
     fun setUp() = attemptCounter.set(0)
 
     @Test
-    fun retryWhenTheEndpointIsUnreachable() {
+    internal fun `retry when the endpoint is unreachable`() {
         assertThrows(RetryableException::class.java) { deadServiceClient.anything }
         assertThat(attemptCounter.get(), equalTo(maxAttempts))
     }
 
     @Test
-    fun notRetryOn4xxErrors() {
+    internal fun `not retry on4xx errors`() {
         assertThrows(ErrorResponseException::class.java) { testClient.withNotFoundException }
         assertThat(attemptCounter.get(), equalTo(1))
     }
 
     @Test
-    fun notRetryOn5xxErrors() {
+    internal fun `not retry on5xx errors`() {
         assertThrows(ErrorResponseException::class.java) { testClient.withException }
         assertThat(attemptCounter.get(), equalTo(1))
     }
 
     internal class RequestCountingConfig {
         @Bean
-        fun attemptCounter(): AtomicInteger {
-            return AtomicInteger(0)
-        }
+        fun attemptCounter() = AtomicInteger(0)
 
         @Bean
-        fun requestInterceptor(attemptCounter: AtomicInteger): RequestInterceptor {
-            return RequestInterceptor { attemptCounter.incrementAndGet() }
-        }
+        fun requestInterceptor(attemptCounter: AtomicInteger) = RequestInterceptor { attemptCounter.incrementAndGet() }
     }
 }

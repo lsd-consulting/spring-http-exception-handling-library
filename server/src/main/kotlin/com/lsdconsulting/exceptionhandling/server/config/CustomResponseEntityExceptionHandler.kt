@@ -4,12 +4,13 @@ import com.lsdconsulting.exceptionhandling.api.DataError
 import com.lsdconsulting.exceptionhandling.api.ErrorResponse
 import com.lsdconsulting.exceptionhandling.server.config.attribute.AttributePopulator
 import com.lsdconsulting.exceptionhandling.server.config.attribute.UnknownErrorHandler
+import lsd.logging.log
 import org.springframework.beans.TypeMismatchException
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
+import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindException
@@ -22,7 +23,6 @@ import org.springframework.web.context.request.WebRequest
 import org.springframework.web.context.request.WebRequest.SCOPE_REQUEST
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
 import org.springframework.web.util.WebUtils.ERROR_EXCEPTION_ATTRIBUTE
-import java.util.stream.Collectors
 
 /*
   The exceptions we are not handling here (explicitly):
@@ -47,13 +47,15 @@ class CustomResponseEntityExceptionHandler(
     override fun handleMissingServletRequestParameter(
         ex: MissingServletRequestParameterException,
         headers: HttpHeaders,
-        status: HttpStatus,
+        status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any> {
         val dataError = DataError(
             message = "validation.missingRequestParameter",
             name = ex.parameterName,
-            code = ex.parameterType)
+            code = ex.parameterType,
+            value = null
+        )
         val errorResponse = ErrorResponse(
             errorCode = INVALID_ERROR_CODE,
             messages = listOf(VALIDATION_FAILED_MESSAGE),
@@ -63,10 +65,11 @@ class CustomResponseEntityExceptionHandler(
         return ResponseEntity(errorResponse, status)
     }
 
+    @Suppress("removal", "OVERRIDE_DEPRECATION")
     override fun handleBindException(
         ex: BindException,
         headers: HttpHeaders,
-        status: HttpStatus,
+        status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any> {
         val errorResponse = ErrorResponse(
@@ -81,7 +84,7 @@ class CustomResponseEntityExceptionHandler(
     override fun handleMethodArgumentNotValid(
         ex: MethodArgumentNotValidException,
         headers: HttpHeaders,
-        status: HttpStatus,
+        status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any> {
         val errorResponse = ErrorResponse(
@@ -96,7 +99,7 @@ class CustomResponseEntityExceptionHandler(
     override fun handleHttpMessageNotReadable(
         ex: HttpMessageNotReadableException,
         headers: HttpHeaders,
-        status: HttpStatus,
+        status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any> {
         val errorResponse = ErrorResponse(
@@ -110,7 +113,7 @@ class CustomResponseEntityExceptionHandler(
     override fun handleTypeMismatch(
         ex: TypeMismatchException,
         headers: HttpHeaders,
-        status: HttpStatus,
+        status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any> {
         val dataError = DataError(
@@ -132,7 +135,7 @@ class CustomResponseEntityExceptionHandler(
         ex: Exception,
         body: Any?,
         headers: HttpHeaders,
-        status: HttpStatus,
+        status: HttpStatusCode,
         request: WebRequest
     ): ResponseEntity<Any> {
         if (INTERNAL_SERVER_ERROR == status) {
@@ -143,22 +146,16 @@ class CustomResponseEntityExceptionHandler(
         return ResponseEntity(errorResponse, status)
     }
 
-    private fun dataErrorsFromBindingResults(bindingResult: BindingResult): List<DataError> {
-        return bindingResult
-            .fieldErrors
-            .stream()
-            .map { fieldError: FieldError -> convert(fieldError) }
-            .sorted(Comparator.comparing { obj: DataError -> obj.name + obj.value + obj.code!! })
-            .collect(Collectors.toList())
-    }
+    private fun dataErrorsFromBindingResults(bindingResult: BindingResult): List<DataError> = bindingResult
+        .fieldErrors
+        .map(this::convert)
+        .sortedWith(Comparator.comparing { obj: DataError -> obj.name + obj.value + obj.code!! })
 
-    private fun convert(fieldError: FieldError): DataError {
-        return DataError(
-            message = fieldError.defaultMessage,
-            name = fieldError.field,
-            code = fieldError.code,
-            value = fieldError.rejectedValue?.toString())
-    }
+    private fun convert(fieldError: FieldError) = DataError(
+        message = fieldError.defaultMessage,
+        name = fieldError.field,
+        code = fieldError.code,
+        value = fieldError.rejectedValue?.toString())
 
     companion object {
         private const val INVALID_ERROR_CODE = "INVALID"

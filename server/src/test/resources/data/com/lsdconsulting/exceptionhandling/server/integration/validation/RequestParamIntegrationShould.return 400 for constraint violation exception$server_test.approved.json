@@ -3,7 +3,7 @@
   "messages" : [ "Validation failed" ],
   "dataErrors" : [ {
     "code" : "Max",
-    "name" : "someParamName",
+    "name" : "arg0",
     "value" : "abcdef",
     "message" : "must be less than or equal to 3"
   } ],

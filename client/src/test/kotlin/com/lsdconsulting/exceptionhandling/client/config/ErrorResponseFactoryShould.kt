@@ -13,8 +13,8 @@ internal class ErrorResponseFactoryShould {
 
     @Test
     @Throws(IOException::class)
-    fun convertJsonToErrorResponse() {
-        val result = ErrorResponseFactory.from(Files.readString(Paths.get("src/test/resources/data/errorResponse.json")))
+    internal fun `convert json to error response`() {
+        val result = ErrorResponseFactory.from(json = Files.readString(Paths.get("src/test/resources/data/errorResponse.json")))
 
         val expectedResult = ErrorResponse(
             errorCode = "ERROR_CODE",

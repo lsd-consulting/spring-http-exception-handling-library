@@ -13,27 +13,29 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE
 import org.springframework.test.context.TestPropertySource
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = [TestApplication::class])
+@SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
 @ExtendWith(ResourcesApprovalsExtension::class)
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
-class UnsupportedContentTypeIntegrationShould(
+@AutoConfigureObservability
+internal class UnsupportedContentTypeIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
 ) {
 
     private val objectWriter = objectMapper.writerWithDefaultPrettyPrinter()
 
     @Test
-    fun return400ForHttpMessageNotReadableException(approver: Approver) {
+    internal fun `return400 for http message not readable exception`(approver: Approver) {
         val responseEntity = testRestTemplate.postForEntity("/objects", "{", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(UNSUPPORTED_MEDIA_TYPE))

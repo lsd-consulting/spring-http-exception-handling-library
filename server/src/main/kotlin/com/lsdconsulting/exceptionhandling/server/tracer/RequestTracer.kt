@@ -1,5 +1,5 @@
 package com.lsdconsulting.exceptionhandling.server.tracer
 
-interface RequestTracer {
+fun interface RequestTracer {
     fun getTraceId(): String?
 }

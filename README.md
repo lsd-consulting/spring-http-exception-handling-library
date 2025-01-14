@@ -12,6 +12,8 @@
 
 ## TODO
 * add "failedAt" to the list of attributes
+* document the `rest.request.receivedAt` request attribute
+* document the `feign.retry.period`, `feign.retry.maxPeriod`, `feign.retry.maxAttempts` patameters with defaults
 * add test for CustomResponseEntityExceptionHandler#handleBindException
 
 This library's purpose is to standardise all HTTP related exception handling. It achieves this by declaring a common error response format, eg:
@@ -121,8 +123,8 @@ interface MyClient {
 
 NOTE
 Please note that the exceptions thrown by the `ClientErrorDecoder` declared in the `ClientConfiguration` are checked exceptions,
-so it's vital to make sure every method in the client declares it throws at least the `ErrorResponseException` exception
-as these should be handled by the client service using the client and not allowed to leak to that service's API.
+so it's vital to make sure every method in the client declaring it throws at least the `ErrorResponseException` exception
+as these should be handled by the client service and not allowed to leak to that service's API.
 
 NOTE
 If the `ClientErrorDecoder` encounters problems with handling the response body, it will throw an exception

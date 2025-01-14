@@ -3,9 +3,14 @@
   "messages" : [ "Validation failed" ],
   "dataErrors" : [ {
     "code" : "Size",
-    "name" : "objectId",
-    "value" : "12345",
+    "name" : "arg0",
+    "value" : "1234",
     "message" : "size must be between 0 and 3"
+  }, {
+    "code" : "Max",
+    "name" : "arg1",
+    "value" : "4",
+    "message" : "must be less than or equal to 3"
   } ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",

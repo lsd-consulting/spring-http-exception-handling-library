@@ -6,17 +6,14 @@ import com.lsdconsulting.exceptionhandling.server.testapp.api.exception.*
 import com.lsdconsulting.exceptionhandling.server.testapp.api.request.IsoDateTimeRequest
 import com.lsdconsulting.exceptionhandling.server.testapp.api.request.TestRequest
 import com.lsdconsulting.exceptionhandling.server.testapp.api.response.TestResponse
+import jakarta.validation.Valid
+import jakarta.validation.constraints.*
 import org.springframework.http.HttpStatus.*
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import java.time.ZonedDateTime
-import javax.validation.Valid
-import javax.validation.constraints.Max
-import javax.validation.constraints.Min
-import javax.validation.constraints.Positive
-import javax.validation.constraints.Size
 
 @Validated
 @RestController
@@ -29,7 +26,8 @@ class TestController {
         message = testRequest.message,
         number = testRequest.number,
         id = 1L,
-        created = ZonedDateTime.now())
+        created = ZonedDateTime.now()
+    )
 
     @PostMapping
     @ResponseStatus(CREATED)
@@ -37,14 +35,16 @@ class TestController {
     fun postIsoDatetime(@Valid @RequestBody isoDateTimeRequest: IsoDateTimeRequest) = TestResponse(
         message = isoDateTimeRequest.toString(),
         id = 1L,
-        created = ZonedDateTime.now())
+        created = ZonedDateTime.now()
+    )
 
     @GetMapping("/{objectId}")
     fun getObject(@PathVariable @Min(1000) @Positive objectId: Long) = TestResponse(
         message = "message",
         number = 5L,
         id = objectId,
-        created = ZonedDateTime.now())
+        created = ZonedDateTime.now()
+    )
 
     @GetMapping("/pathVariableValidation/{objectId}")
     fun getObjectByPathVariable(@PathVariable @Size(max = 3) objectId: String) = TestResponse(
@@ -57,6 +57,31 @@ class TestController {
     fun getObjectBy(@RequestParam @Max(3) someParamName: String) = listOf(
         TestResponse(
             message = someParamName,
+            number = 5L,
+            id = 1L,
+            created = ZonedDateTime.now())
+    )
+
+    @GetMapping("/multipleParams")
+    fun getObjectByMultipleParams(
+        @RequestParam @Size(max = 3) someStringParam: String,
+        @RequestParam @Max(3) someNumericParam: Int
+    ) = listOf(
+        TestResponse(
+            message = "someMessage",
+            number = 5L,
+            id = 1L,
+            created = ZonedDateTime.now()
+        )
+    )
+
+    @GetMapping("/multipleSemiOptionalParams")
+    fun getObjectByMultipleSemiOptionalParams(
+        @RequestParam(required = false) @NotBlank someStringParam1: String,
+        @RequestParam(required = false) @NotNull someStringParam2: String
+    ) = listOf(
+        TestResponse(
+            message = "someMessage",
             number = 5L,
             id = 1L,
             created = ZonedDateTime.now())
@@ -97,9 +122,22 @@ class TestController {
             messages = listOf("some message")), PRECONDITION_FAILED
     ) {}
 
+    @GetMapping("/conflict")
+    fun getWithConflictException(): Unit = throw object : ErrorResponseException(
+        ErrorResponse(
+            errorCode = "CONFLICT",
+            attributes = mapOf("attribute" to "attribute"),
+            messages = listOf("some message")), CONFLICT
+    ) {}
+
     @GetMapping("/generateResponseStatusException")
     fun getWithResponseStatusException(): Unit =
         throw ResponseStatusException(INSUFFICIENT_STORAGE, "Insufficient storage")
+
+    @GetMapping("/internalServerError")
+    fun getWithDatabaseResponseException(): TestResponse {
+        throw ResponseStatusException(INTERNAL_SERVER_ERROR, "Server error")
+    }
 
     @GetMapping("/generateResponseStatusExceptionNoMessage")
     fun getWithResponseStatusExceptionNoMessage(): Unit =
