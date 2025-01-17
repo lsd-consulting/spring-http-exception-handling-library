@@ -20,6 +20,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON
 import org.springframework.test.context.TestPropertySource
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT, classes = [TestApplication::class])
@@ -39,6 +40,7 @@ internal class RequestParamIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -47,6 +49,7 @@ internal class RequestParamIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects?someParamName=abcdef", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 

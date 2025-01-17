@@ -26,6 +26,7 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod.POST
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.TestPropertySource
 
@@ -45,6 +46,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for http message not readable exception missing body`(approver: Approver) {
         val responseEntity = post(null)
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -52,6 +54,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for method argument not valid exception single property invalid data`(approver: Approver) {
         val responseEntity = post(TestRequest(message = "b", number = 5L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -59,6 +62,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for method argument not valid exception single property missing data`(approver: Approver) {
         val responseEntity = post(TestRequest(number = 5L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -66,6 +70,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for method argument not valid exception single property null`(approver: Approver) {
         val responseEntity = post(TestRequest(message = null, number = 5L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -73,6 +78,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for method argument not valid exception multiple property invalid data`(approver: Approver) {
         val responseEntity = post(TestRequest(message = "b", number = 3L))
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -80,6 +86,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for method argument not valid exception multiple property missing data`(approver: Approver) {
         val responseEntity = post(TestRequest())
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -87,6 +94,7 @@ internal class DataValidationIntegrationShould(
     internal fun `return 400 for method argument not valid exception missing iso date time`(approver: Approver) {
         val responseEntity = postIsoDateTime(IsoDateTimeRequest())
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -97,6 +105,7 @@ internal class DataValidationIntegrationShould(
             ErrorResponse::class.java
         )
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -104,6 +113,7 @@ internal class DataValidationIntegrationShould(
     internal fun `report only the first missing query parameter when required=true in @RequestParam`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/multipleParams", ErrorResponse::class.java)
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -111,6 +121,7 @@ internal class DataValidationIntegrationShould(
     internal fun `report all missing query parameters when required=false in @RequestParam`(approver: Approver) {
         val responseEntity = testRestTemplate.getForEntity("/objects/multipleSemiOptionalParams", ErrorResponse::class.java)
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 

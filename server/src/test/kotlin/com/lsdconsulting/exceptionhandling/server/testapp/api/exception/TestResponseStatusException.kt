@@ -1,7 +1,7 @@
 package com.lsdconsulting.exceptionhandling.server.testapp.api.exception
 
 import org.springframework.http.HttpStatus.INSUFFICIENT_STORAGE
-import org.springframework.web.server.ResponseStatusException
-import java.io.IOException
+import org.springframework.web.bind.annotation.ResponseStatus
 
-class TestResponseStatusException : ResponseStatusException(INSUFFICIENT_STORAGE, "Insufficient storage", IOException())
+@ResponseStatus(INSUFFICIENT_STORAGE)
+class TestResponseStatusException : Exception("Insufficient storage")

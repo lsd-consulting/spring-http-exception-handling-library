@@ -22,6 +22,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus.*
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.TestPropertySource
 import java.io.IOException
@@ -44,6 +46,7 @@ internal class ExceptionIntegrationShould(
         testRestTemplate.getForEntity("/objects/generateTestException", String::class.java)
         val responseEntity = testRestTemplate.getForEntity("/objects/generateTestException", ErrorResponse::class.java)
         assertThat(responseEntity.statusCode, `is`(INTERNAL_SERVER_ERROR))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -56,6 +59,7 @@ internal class ExceptionIntegrationShould(
         )
 
         assertThat(responseEntity.statusCode, `is`(INTERNAL_SERVER_ERROR))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -65,6 +69,7 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects/generateException", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(INTERNAL_SERVER_ERROR))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -77,6 +82,7 @@ internal class ExceptionIntegrationShould(
         )
 
         assertThat(responseEntity.statusCode, `is`(INTERNAL_SERVER_ERROR))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -86,6 +92,7 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects/objectNotFoundException", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(NOT_FOUND))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -95,6 +102,7 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.postForEntity("/objects/1", TestRequest(), ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(METHOD_NOT_ALLOWED))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_JSON))
         approver.assertApproved(asString(responseEntity))
     }
 
@@ -104,6 +112,7 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedException", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(CONFLICT))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -113,6 +122,7 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedExceptionWithMessage", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(CONFLICT))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -123,6 +133,7 @@ internal class ExceptionIntegrationShould(
 
         assertThat(responseEntity.statusCode, `is`(CONFLICT))
         assertThat(responseEntity.body, `is`(notNullValue()))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -133,6 +144,7 @@ internal class ExceptionIntegrationShould(
 
         assertThat(responseEntity.statusCode, `is`(INTERNAL_SERVER_ERROR))
         assertThat(responseEntity.body, `is`(notNullValue()))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -142,6 +154,7 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects/generateResponseStatusException", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -151,16 +164,18 @@ internal class ExceptionIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/objects/generateResponseStatusExceptionNoMessage", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
     @Test
     @Throws(IOException::class)
     internal fun `return507 annotated response status exception`(approver: Approver) {
-        testRestTemplate.getForEntity("/objects/generateAnnotatedResponseStatusException", String::class.java)
-        val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedResponseStatusException", ErrorResponse::class.java)
+        testRestTemplate.getForEntity("/objects/generateAnnotatedTestResponseStatusException", String::class.java)
+        val responseEntity = testRestTemplate.getForEntity("/objects/generateAnnotatedTestResponseStatusException", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(INSUFFICIENT_STORAGE))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 

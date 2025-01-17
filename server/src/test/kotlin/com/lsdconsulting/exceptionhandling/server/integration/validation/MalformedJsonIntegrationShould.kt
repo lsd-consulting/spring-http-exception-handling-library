@@ -26,6 +26,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON
 import org.springframework.test.context.TestPropertySource
 
 @SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
@@ -46,6 +47,7 @@ internal class MalformedJsonIntegrationShould(
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
         assertThat(responseEntity.body, `is`(notNullValue()))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -57,6 +59,7 @@ internal class MalformedJsonIntegrationShould(
         val responseEntity = testRestTemplate.postForEntity("/objects", request, ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -68,6 +71,7 @@ internal class MalformedJsonIntegrationShould(
         val responseEntity = testRestTemplate.postForEntity("/objects", request, ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
@@ -79,6 +83,7 @@ internal class MalformedJsonIntegrationShould(
         val responseEntity = testRestTemplate.postForEntity("/objects/isodatetime", request, ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(BAD_REQUEST))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 
