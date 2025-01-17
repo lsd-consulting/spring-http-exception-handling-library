@@ -143,7 +143,7 @@ class TestController {
     fun getWithResponseStatusExceptionNoMessage(): Unit =
         throw ResponseStatusException(INSUFFICIENT_STORAGE)
 
-    @GetMapping("/generateAnnotatedResponseStatusException")
+    @GetMapping("/generateAnnotatedTestResponseStatusException")
     fun getWithAnnotatedResponseStatusException(): Unit =
         throw TestResponseStatusException()
 

@@ -36,7 +36,7 @@ class ControllerExceptionHandler(
             is ConstraintViolationException -> handle(ex, request)
             is ResponseStatusException -> handle(ex, request)
             is ErrorResponseException -> handle(ex, request)
-            else -> ResponseEntity(unknownErrorHandler.handle(ex, request), getResponseStatusFromAnnotation(ex))
+            else -> ResponseEntity(unknownErrorHandler.handle(ex, request), headerWithContentType(), getResponseStatusFromAnnotation(ex))
         }
         log().error("For request:{}, generated httpStatus:{}, errorResponse:{}", request, responseEntity.statusCode, responseEntity.body)
         log().error("Handling exception", ex)
@@ -45,7 +45,7 @@ class ControllerExceptionHandler(
 
     private fun handle(ex: ErrorResponseException, request: WebRequest): ResponseEntity<*> {
         val errorResponse = ex.errorResponse.copy(attributes = ex.errorResponse.attributes + attributePopulator.populateAttributes(ex, request))
-        return ResponseEntity(errorResponse, ex.httpStatus)
+        return ResponseEntity(errorResponse, headerWithContentType(), ex.httpStatus)
     }
 
     private fun handle(ex: ResponseStatusException, request: WebRequest): ResponseEntity<*> {
@@ -54,7 +54,7 @@ class ControllerExceptionHandler(
             messages = listOf(ex.message ?: "Message missing"),
             attributes = attributePopulator.populateAttributes(ex, request)
         )
-        return ResponseEntity(errorResponse, ex.statusCode)
+        return ResponseEntity(errorResponse, headerWithContentType(), ex.statusCode)
     }
 
     private fun handle(ex: ConstraintViolationException, request: WebRequest): ResponseEntity<*> {
@@ -67,7 +67,7 @@ class ControllerExceptionHandler(
             dataErrors = bodyDataErrors ?: emptyList(),
             attributes = attributePopulator.populateAttributes(ex, request)
         )
-        return ResponseEntity(errorResponse, BAD_REQUEST)
+        return ResponseEntity(errorResponse, headerWithContentType(), BAD_REQUEST)
     }
 
     private fun getResponseStatusFromAnnotation(ex: Exception): HttpStatus {

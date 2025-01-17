@@ -8,6 +8,7 @@ import com.lsdconsulting.exceptionhandling.server.integration.config.Integration
 import com.lsdconsulting.exceptionhandling.server.testapp.TestApplication
 import com.lsdconsulting.exceptionhandling.server.testapp.client.TestClient
 import com.oneeyedmen.okeydoke.Approver
+import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
@@ -23,6 +24,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod.GET
 import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.http.ResponseEntity
 import org.springframework.test.context.TestPropertySource
 import java.io.IOException
@@ -45,6 +47,7 @@ internal class ErrorAttributesHandlerIntegrationShould(
         val responseEntity = testRestTemplate.getForEntity("/non-existent-resource", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(NOT_FOUND))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_JSON))
         approver.assertApproved(asString(responseEntity))
     }
 
@@ -58,6 +61,7 @@ internal class ErrorAttributesHandlerIntegrationShould(
         val responseEntity = testRestTemplate.exchange("/non-existent-resource", GET, entity, ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(NOT_FOUND))
+        assertThat(responseEntity.headers.contentType!!.toString(), equalTo("application/problem+json;charset=UTF-8"))
         approver.assertApproved(asString(responseEntity))
     }
 

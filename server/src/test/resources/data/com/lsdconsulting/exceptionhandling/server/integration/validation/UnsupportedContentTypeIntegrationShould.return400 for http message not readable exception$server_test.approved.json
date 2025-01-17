@@ -1,7 +1,12 @@
 {
-  "errorCode" : "UNKNOWN_ERROR",
-  "messages" : [ "Content-Type 'text/plain;charset=UTF-8' is not supported" ],
-  "dataErrors" : [ ],
+  "errorCode" : "INVALID",
+  "messages" : [ "Data missing" ],
+  "dataErrors" : [ {
+    "code" : "HttpMediaTypeNotSupportedException",
+    "name" : "Content-Type",
+    "value" : "text/plain;charset=UTF-8",
+    "message" : "Content-Type 'text/plain;charset=UTF-8' is not supported"
+  } ],
   "attributes" : {
     "traceId" : "40e1488ed0001adc",
     "exception" : "HttpMediaTypeNotSupportedException",

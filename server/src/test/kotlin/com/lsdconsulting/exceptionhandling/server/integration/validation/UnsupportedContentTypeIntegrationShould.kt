@@ -20,6 +20,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE
+import org.springframework.http.MediaType.APPLICATION_PROBLEM_JSON
 import org.springframework.test.context.TestPropertySource
 
 @SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
@@ -39,6 +40,7 @@ internal class UnsupportedContentTypeIntegrationShould(
         val responseEntity = testRestTemplate.postForEntity("/objects", "{", ErrorResponse::class.java)
 
         assertThat(responseEntity.statusCode, `is`(UNSUPPORTED_MEDIA_TYPE))
+        assertThat(responseEntity.headers.contentType, `is`(APPLICATION_PROBLEM_JSON))
         approver.assertApproved(asString(responseEntity.body!!))
     }
 

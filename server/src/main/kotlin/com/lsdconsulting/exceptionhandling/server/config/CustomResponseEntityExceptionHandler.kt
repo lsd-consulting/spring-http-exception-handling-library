@@ -13,9 +13,12 @@ import org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
+import org.springframework.lang.Nullable
 import org.springframework.validation.BindException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
+import org.springframework.web.ErrorResponseException
+import org.springframework.web.HttpMediaTypeNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -62,7 +65,44 @@ class CustomResponseEntityExceptionHandler(
             dataErrors = listOf(dataError),
             attributes = attributePopulator.populateAttributes(ex, request))
         log().error("Handling MissingServletRequestParameterException - httpStatus:{}, errorResponse:{}", status, errorResponse)
-        return ResponseEntity(errorResponse, status)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
+    }
+
+    override fun handleHttpMediaTypeNotSupported(
+        ex: HttpMediaTypeNotSupportedException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any> {
+        val dataError = DataError(
+            message = ex.message,
+            name = "Content-Type",
+            code = ex.javaClass.simpleName,
+            value = ex.contentType?.toString()
+        )
+        val errorResponse = ErrorResponse(
+            errorCode = INVALID_ERROR_CODE,
+            messages = listOf(DATA_MISSING_MESSAGE),
+            dataErrors = listOf(dataError),
+            attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling HttpMediaTypeNotSupportedException - httpStatus:{}, errorResponse:{}", status, errorResponse)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
+    }
+
+    @Nullable
+    override fun handleErrorResponseException(
+        ex: ErrorResponseException,
+        headers: HttpHeaders,
+        status: HttpStatusCode,
+        request: WebRequest
+    ): ResponseEntity<Any> {
+        val errorResponse = ErrorResponse(
+            errorCode = UNKNOWN_ERROR_CODE,
+            messages = listOf(ex.message ?: "Message missing"),
+            dataErrors = listOf(),
+            attributes = attributePopulator.populateAttributes(ex, request))
+        log().error("Handling ErrorResponseException - httpStatus:{}, errorResponse:{}", status, errorResponse)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
     }
 
     @Suppress("removal", "OVERRIDE_DEPRECATION")
@@ -78,7 +118,7 @@ class CustomResponseEntityExceptionHandler(
             dataErrors = dataErrorsFromBindingResults(ex.bindingResult),
             attributes = attributePopulator.populateAttributes(ex, request))
         log().error("Handling BindException - httpStatus:{}, errorResponse:{}", status, errorResponse)
-        return ResponseEntity(errorResponse, status)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
     }
 
     override fun handleMethodArgumentNotValid(
@@ -93,7 +133,7 @@ class CustomResponseEntityExceptionHandler(
             dataErrors = dataErrorsFromBindingResults(ex.bindingResult),
             attributes = attributePopulator.populateAttributes(ex, request))
         log().error("Handling MethodArgumentNotValidException - httpStatus:{}, errorResponse:{}", status, errorResponse)
-        return ResponseEntity(errorResponse, status)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
     }
 
     override fun handleHttpMessageNotReadable(
@@ -107,7 +147,7 @@ class CustomResponseEntityExceptionHandler(
             messages = listOf(MESSAGE_PARSE_ERROR_MESSAGE),
             attributes = attributePopulator.populateAttributes(ex, request))
         log().error("Handling HttpMessageNotReadableException - httpStatus:{}, errorResponse:{}", status, errorResponse)
-        return ResponseEntity(errorResponse, status)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
     }
 
     override fun handleTypeMismatch(
@@ -127,7 +167,7 @@ class CustomResponseEntityExceptionHandler(
             dataErrors = listOf(dataError),
             attributes = attributePopulator.populateAttributes(ex, request))
         log().error("Handling TypeMismatchException - httpStatus:{}, errorResponse:{}", status, errorResponse)
-        return ResponseEntity(errorResponse, status)
+        return ResponseEntity(errorResponse, headerWithContentType(), status)
     }
 
     // Default handler for all the exceptions not explicitly handled by this class
@@ -158,6 +198,7 @@ class CustomResponseEntityExceptionHandler(
         value = fieldError.rejectedValue?.toString())
 
     companion object {
+        private const val UNKNOWN_ERROR_CODE = "UNKNOWN_ERROR"
         private const val INVALID_ERROR_CODE = "INVALID"
         private const val VALIDATION_FAILED_MESSAGE = "Validation failed"
         private const val DATA_MISSING_MESSAGE = "Data missing"
