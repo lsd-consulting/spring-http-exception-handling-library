@@ -4,8 +4,8 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.2.12' apply false
     id 'maven-publish'
-    id 'org.jetbrains.kotlin.jvm' version '2.1.0'
-    id 'org.jetbrains.kotlin.plugin.spring' version '2.1.0'
+    id 'org.jetbrains.kotlin.jvm' version '2.1.10'
+    id 'org.jetbrains.kotlin.plugin.spring' version '2.1.10'
     id 'jacoco'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
     id 'com.palantir.git-version' version '3.1.0'
@@ -45,7 +45,7 @@ allprojects {
         imports {
             mavenBom SpringBootPlugin.BOM_COORDINATES
             mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2023.0.5'
-            mavenBom 'org.jetbrains.kotlin:kotlin-bom:2.1.0'
+            mavenBom 'org.jetbrains.kotlin:kotlin-bom:2.1.10'
         }
     }
 }
