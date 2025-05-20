@@ -8,7 +8,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.spring' version '2.1.21'
     id 'jacoco'
     id 'io.github.gradle-nexus.publish-plugin' version '2.0.0'
-    id 'com.palantir.git-version' version '3.2.0'
+    id 'com.palantir.git-version' version '3.3.0'
 }
 description = 'Library for standardising all HTTP related exception handling'
 group = 'io.github.lsd-consulting'
