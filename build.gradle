@@ -2,7 +2,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.4.5' apply false
+    id 'org.springframework.boot' version '3.4.6' apply false
     id 'maven-publish'
     id 'org.jetbrains.kotlin.jvm' version '2.1.21'
     id 'org.jetbrains.kotlin.plugin.spring' version '2.1.21'
