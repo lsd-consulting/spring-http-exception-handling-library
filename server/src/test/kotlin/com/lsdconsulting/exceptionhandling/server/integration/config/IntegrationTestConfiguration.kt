@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Import
     BraveRequestTracerConfiguration::class,
     RequestFilterConfiguration::class,
     ConstantTimeProviderConfiguration::class,
-    TestRestTemplateConfiguration::class
+    TestRestTemplateConfiguration::class,
+    FeignTraceIdConfiguration::class
 )
 class IntegrationTestConfiguration

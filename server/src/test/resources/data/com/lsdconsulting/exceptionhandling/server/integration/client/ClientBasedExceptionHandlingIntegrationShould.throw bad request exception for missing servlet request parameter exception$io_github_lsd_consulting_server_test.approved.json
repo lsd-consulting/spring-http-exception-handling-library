@@ -1,0 +1,15 @@
+{
+  "errorCode" : "INVALID",
+  "messages" : [ "Validation failed" ],
+  "dataErrors" : [ {
+    "code" : "String",
+    "name" : "someParamName",
+    "value" : null,
+    "message" : "validation.missingRequestParameter"
+  } ],
+  "attributes" : {
+    "traceId" : "40e1488ed0001adc",
+    "exception" : "MissingServletRequestParameterException",
+    "startTime" : "2020-11-27T11:17:40.095818Z"
+  }
+}

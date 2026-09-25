@@ -1,15 +1,14 @@
 dependencies {
-
     implementation project(':api')
 
-    // lsd-consulting
     implementation 'io.github.lsd-consulting:lsd-logging-library:1.0.18'
 
-    // spring
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    // Boot 4 modular web + jackson2 bridge for Feign converters still on jackson2 ObjectMapper
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-jackson2'
+    implementation 'org.springframework.boot:spring-boot-http-converter'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
-    // other
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }

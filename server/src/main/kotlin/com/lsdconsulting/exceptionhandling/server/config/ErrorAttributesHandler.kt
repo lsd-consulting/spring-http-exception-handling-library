@@ -2,10 +2,10 @@ package com.lsdconsulting.exceptionhandling.server.config
 
 import com.lsdconsulting.exceptionhandling.server.config.attribute.REST_REQUEST_RECEIVED_AT_ATTRIBUTE
 import com.lsdconsulting.exceptionhandling.server.tracer.RequestTracer
-import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration
+import org.springframework.boot.micrometer.tracing.brave.autoconfigure.BraveAutoConfiguration
 import org.springframework.boot.autoconfigure.AutoConfigureAfter
 import org.springframework.boot.web.error.ErrorAttributeOptions
-import org.springframework.boot.web.servlet.error.DefaultErrorAttributes
+import org.springframework.boot.webmvc.error.DefaultErrorAttributes
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.context.request.RequestAttributes

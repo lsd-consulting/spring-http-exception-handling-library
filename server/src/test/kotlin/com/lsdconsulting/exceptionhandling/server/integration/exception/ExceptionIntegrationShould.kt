@@ -2,6 +2,7 @@ package com.lsdconsulting.exceptionhandling.server.integration.exception
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.lsdconsulting.exceptionhandling.api.ErrorResponse
+import com.lsdconsulting.exceptionhandling.server.integration.support.ApprovalJson
 import com.lsdconsulting.exceptionhandling.api.mapper.ObjectMapperBuilder.objectMapper
 import com.lsdconsulting.exceptionhandling.server.exension.ResourcesApprovalsExtension
 import com.lsdconsulting.exceptionhandling.server.integration.config.IntegrationTestConfiguration
@@ -15,10 +16,10 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
+import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureTestRestTemplate
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
-import org.springframework.boot.test.web.client.TestRestTemplate
+import org.springframework.boot.resttestclient.TestRestTemplate
 import org.springframework.cloud.openfeign.EnableFeignClients
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus.*
@@ -32,7 +33,6 @@ import java.io.IOException
 @SpringBootTest(webEnvironment = DEFINED_PORT, classes = [TestApplication::class])
 @ExtendWith(ResourcesApprovalsExtension::class)
 @TestPropertySource("classpath:application-test.properties")
-@AutoConfigureObservability
 @EnableFeignClients(clients = [TestClient::class])
 internal class ExceptionIntegrationShould(
     @Autowired private val testRestTemplate: TestRestTemplate
@@ -180,8 +180,8 @@ internal class ExceptionIntegrationShould(
     }
 
     @Throws(JsonProcessingException::class)
-    private fun asString(errorResponse: ErrorResponse) = objectWriter.writeValueAsString(errorResponse)
+    private fun asString(errorResponse: ErrorResponse) = ApprovalJson.write(objectWriter, errorResponse)
 
     @Throws(JsonProcessingException::class)
-    private fun asString(responseEntity: ResponseEntity<ErrorResponse>) = objectWriter.writeValueAsString(responseEntity.body!!)
+    private fun asString(responseEntity: ResponseEntity<ErrorResponse>) = ApprovalJson.write(objectWriter, responseEntity.body!!)
 }
