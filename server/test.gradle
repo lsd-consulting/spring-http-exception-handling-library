@@ -1,15 +1,22 @@
 dependencies {
     testImplementation project(':client')
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test-classic'
+    testImplementation 'org.springframework.boot:spring-boot-resttestclient'
+    testImplementation 'org.springframework.boot:spring-boot-restclient'
+    testImplementation 'org.springframework.boot:spring-boot-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-starter-tomcat'
+    testImplementation 'org.springframework.boot:spring-boot-micrometer-tracing-test'
     testImplementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     testImplementation 'com.oneeyedmen:okeydoke:2.0.3'
     testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
     testImplementation 'org.exparity:hamcrest-date:2.0.8'
-    testImplementation 'io.zipkin.zipkin2:zipkin'
+    testImplementation 'io.zipkin.zipkin2:zipkin:3.4.3'
     testImplementation 'io.micrometer:micrometer-tracing-test'
-    testImplementation 'io.mockk:mockk:1.13.14'
-    testImplementation 'org.apache.commons:commons-lang3:3.17.0'
+    testImplementation 'io.mockk:mockk:1.14.11'
+    testImplementation 'org.apache.commons:commons-lang3'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 test {

@@ -13,7 +13,7 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
-import org.springframework.boot.actuate.autoconfigure.tracing.BraveAutoConfiguration
+import org.springframework.boot.micrometer.tracing.brave.autoconfigure.BraveAutoConfiguration
 import org.springframework.boot.test.util.TestPropertyValues
 import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.security.SecureRandom

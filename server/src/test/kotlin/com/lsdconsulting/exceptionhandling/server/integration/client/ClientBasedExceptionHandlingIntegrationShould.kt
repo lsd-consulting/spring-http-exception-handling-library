@@ -2,6 +2,7 @@ package com.lsdconsulting.exceptionhandling.server.integration.client
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.lsdconsulting.exceptionhandling.api.ErrorResponse
+import com.lsdconsulting.exceptionhandling.server.integration.support.ApprovalJson
 import com.lsdconsulting.exceptionhandling.api.mapper.ObjectMapperBuilder.objectMapper
 import com.lsdconsulting.exceptionhandling.client.exception.*
 import com.lsdconsulting.exceptionhandling.server.exension.ResourcesApprovalsExtension
@@ -19,7 +20,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.actuate.observability.AutoConfigureObservability
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.DEFINED_PORT
 import org.springframework.cloud.openfeign.EnableFeignClients
@@ -35,7 +35,6 @@ import java.util.stream.Stream
 @TestPropertySource("classpath:application-test.properties")
 @EnableFeignClients(clients = [TestClient::class])
 @Import(IntegrationTestConfiguration::class)
-@AutoConfigureObservability
 internal class ClientBasedExceptionHandlingIntegrationShould(
     @Autowired private val testClient: TestClient
 ) {
@@ -145,24 +144,24 @@ internal class ClientBasedExceptionHandlingIntegrationShould(
 
     @ParameterizedTest
     @MethodSource("provideResponseCodeAndExceptionType")
-    internal fun `throw exception corresponding to response code when response malformed`(statusCode: Int, exception: Class<out ErrorResponseException?>?) {
+    internal fun `throw exception corresponding to response code when response malformed`(statusCode: Int, exception: Class<out ErrorResponseException>) {
         val resultException = assertThrows(exception) { testClient.getMalformedResponse(statusCode) }
 
         assertThat(resultException, `is`(notNullValue()))
-        assertThat(resultException?.message, `is`("Error message unavailable"))
+        assertThat(resultException.message, `is`("Error message unavailable"))
     }
 
     @ParameterizedTest
     @MethodSource("provideResponseCodeAndExceptionType")
-    internal fun `throw exception corresponding to response code when empty response`(statusCode: Int, exception: Class<out ErrorResponseException?>?) {
+    internal fun `throw exception corresponding to response code when empty response`(statusCode: Int, exception: Class<out ErrorResponseException>) {
         val resultException = assertThrows(exception) { testClient.getEmptyResponse(statusCode) }
 
         assertThat(resultException, `is`(notNullValue()))
-        assertThat(resultException?.message, `is`("Error message unavailable"))
+        assertThat(resultException.message, `is`("Error message unavailable"))
     }
 
     @Throws(JsonProcessingException::class)
-    private fun asString(errorResponse: ErrorResponse) = objectWriter.writeValueAsString(errorResponse)
+    private fun asString(errorResponse: ErrorResponse) = ApprovalJson.write(objectWriter, errorResponse)
 
     companion object {
         @JvmStatic

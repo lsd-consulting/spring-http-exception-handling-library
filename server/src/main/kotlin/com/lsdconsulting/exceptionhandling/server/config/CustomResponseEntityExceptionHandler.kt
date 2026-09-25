@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.lang.Nullable
-import org.springframework.validation.BindException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
 import org.springframework.web.ErrorResponseException
@@ -102,22 +101,6 @@ class CustomResponseEntityExceptionHandler(
             dataErrors = listOf(),
             attributes = attributePopulator.populateAttributes(ex, request))
         log().error("Handling ErrorResponseException - httpStatus:{}, errorResponse:{}", status, errorResponse)
-        return ResponseEntity(errorResponse, headerWithContentType(), status)
-    }
-
-    @Suppress("removal", "OVERRIDE_DEPRECATION")
-    override fun handleBindException(
-        ex: BindException,
-        headers: HttpHeaders,
-        status: HttpStatusCode,
-        request: WebRequest
-    ): ResponseEntity<Any> {
-        val errorResponse = ErrorResponse(
-            errorCode = INVALID_ERROR_CODE,
-            messages = listOf(DATA_MISSING_MESSAGE),
-            dataErrors = dataErrorsFromBindingResults(ex.bindingResult),
-            attributes = attributePopulator.populateAttributes(ex, request))
-        log().error("Handling BindException - httpStatus:{}, errorResponse:{}", status, errorResponse)
         return ResponseEntity(errorResponse, headerWithContentType(), status)
     }
 

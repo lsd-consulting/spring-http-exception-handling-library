@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.autoconfigure.condition.*
 import org.springframework.boot.autoconfigure.template.TemplateAvailabilityProviders
-import org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver
+import org.springframework.boot.webmvc.autoconfigure.error.ErrorViewResolver
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ConditionContext
 import org.springframework.context.annotation.Conditional
@@ -50,8 +50,9 @@ class ErrorViewConfiguration {
     private class ErrorTemplateMissingCondition : SpringBootCondition() {
         override fun getMatchOutcome(context: ConditionContext, metadata: AnnotatedTypeMetadata): ConditionOutcome {
             val message = ConditionMessage.forCondition("ErrorTemplate Missing")
-            val providers = TemplateAvailabilityProviders(context.classLoader)
-            val provider = providers.getProvider("error", context.environment, context.classLoader, context.resourceLoader)
+            val classLoader = requireNotNull(context.classLoader) { "ClassLoader required for error template check" }
+            val providers = TemplateAvailabilityProviders(classLoader)
+            val provider = providers.getProvider("error", context.environment, classLoader, context.resourceLoader)
             return if (provider != null) {
                 ConditionOutcome.noMatch(message.foundExactly("template from $provider"))
             } else {

@@ -6,9 +6,9 @@ import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.notNullValue
 import org.hamcrest.collection.IsMapContaining.hasKey
 import org.junit.jupiter.api.Test
-import org.springframework.boot.autoconfigure.web.servlet.ServletWebServerFactoryAutoConfiguration
+import org.springframework.boot.tomcat.autoconfigure.servlet.TomcatServletWebServerAutoConfiguration
 import org.springframework.boot.test.util.TestPropertyValues
-import org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext
+import org.springframework.boot.web.server.servlet.context.AnnotationConfigServletWebServerApplicationContext
 
 internal class RequestFilterConfigurationShould {
 
@@ -18,7 +18,7 @@ internal class RequestFilterConfigurationShould {
             TestPropertyValues.of("server.port=0").applyTo(context)
             context.register(
                 DefaultTimeProviderConfiguration::class.java,
-                ServletWebServerFactoryAutoConfiguration::class.java,
+                TomcatServletWebServerAutoConfiguration::class.java,
                 RequestFilterConfiguration::class.java
             )
             context.refresh()
