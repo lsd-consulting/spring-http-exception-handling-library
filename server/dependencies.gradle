@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':api')
 
-    implementation 'io.github.lsd-consulting:lsd-logging-library:1.0.19'
+    implementation 'io.github.lsd-consulting:lsd-logging-library:3.0.1'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
