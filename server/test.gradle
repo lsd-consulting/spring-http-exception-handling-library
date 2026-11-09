@@ -12,7 +12,7 @@ dependencies {
     testImplementation 'com.oneeyedmen:okeydoke:2.0.3'
     testImplementation 'com.github.npathai:hamcrest-optional:2.0.0'
     testImplementation 'org.exparity:hamcrest-date:2.0.8'
-    testImplementation 'io.zipkin.zipkin2:zipkin:3.4.3'
+    testImplementation 'io.zipkin.zipkin2:zipkin:3.6.1'
     testImplementation 'io.micrometer:micrometer-tracing-test'
     testImplementation 'io.mockk:mockk:1.14.11'
     testImplementation 'org.apache.commons:commons-lang3'
