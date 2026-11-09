@@ -1,7 +1,7 @@
 dependencies {
     implementation project(':api')
 
-    implementation 'io.github.lsd-consulting:lsd-logging-library:1.0.19'
+    implementation 'io.github.lsd-consulting:lsd-logging-library:3.0.1'
 
     // Boot 4 modular web + jackson2 bridge for Feign converters still on jackson2 ObjectMapper
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
